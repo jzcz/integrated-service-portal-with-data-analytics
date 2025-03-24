@@ -254,3 +254,16 @@ CREATE TABLE assessment_answers (
   FOREIGN KEY (assessment_question_id) REFERENCES assessment_questions(assessment_question_id) ON DELETE CASCADE,
   FOREIGN KEY (assessment_id) REFERENCES assessments(assessment_id) ON DELETE CASCADE
 );
+
+INSERT INTO programs (program_name)
+VALUES 
+('Bachelor of Science in Accountancy (BSA)'),
+('Bachelor of Science in Management Accounting (BSMA)'),
+('Bachelor of Science in Information Technology (BSIT)'),
+('Bachelor of Science in Entrepreneurship (BSENT)'),
+('Bachelor of Science in Electronics Engineering (BSEcE)'),
+('Bachelor of Science in Industrial Engineering (BSIE)'),
+('Bachelor of Early Childhood Education (BECED)'),
+('Bachelor of Science in Information Systems (BSIS)'),
+('Bachelor of Science in Computer Science (BSCS)'),
+('Bachelor of Science in Computer Engineering (BSCpE)');
