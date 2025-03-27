@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+/* Custom Styles for the Service Portal */
+:root {
+  --sidebar-width: 300px;
+  --navbar-height: 70px;
+  --sidebar-color: #08437F;
+}
+
+main {
+  margin-top: var(--navbar-height);
+}
+
+#sidebar{
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-color);
+  color:rgb(223, 223, 223)
+}
+
+.navbar {
+  height: var(--navbar-height);
+  background-color: white;
+  border-bottom: 3px solid var(--sidebar-color);
+}
+
+nav div a span{
+  font-family: "Rubik", sans-serif;
+}
+
+li hr {
+  height: 3px;
+  background-color: white;
+}
+
+.nav-link-title {
+  color: white;
+  font-size: 18px
+}
+
+li.sidebar-nav-item {
+  font-size: 14px;
+  padding: 0 6px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+li.sidebar-nav-item:hover {
+  background-color: #4e79a4;
+}
+
+.navbar-toggler {
+  display: block;
+}
+
+@media only screen and (min-width: 800px) {
+  body {
+      overflow: auto !important;
+  }
+
+  main {
+      margin-left: var(--sidebar-width);
+  }
+
+  #sidebar {
+      top: var(--navbar-height);
+  }
+
+  #sidebar .offcanvas-start {
+      position: fixed; 
+      top: 0;
+      left: 0;
+      bottom: 0;
+  }
+  .offcanvas-backdrop {
+      display: none !important;
+  }
+
+  .navbar-toggler {
+      display: none
+  }
+
+}
+
+.form-box {
+  width: 700px;
+  background-color: white;
+}
+
+.form-title {
+  background-color: #08437F;
+  color: white;
+  padding: 3px 0;
+}
+
+.form-title p {
+  margin: auto;
+}
+
+.sliding-form label {
+  font-size: 14px;
+  color:rgb(75, 75, 75)
+}
+
+.form-control, option {
+  font-size: 14px;
+}  
+
+.form-text-header {
+  font-size: 18px;
+}
+
+.form-wrapper{
+  width: 100%;
+}
+
+.next-btn {
+  padding: 8px 26px
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+
+
+
+
+
