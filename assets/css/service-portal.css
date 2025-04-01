@@ -126,10 +126,127 @@ li.sidebar-nav-item:hover {
   display: none;
 }
 
+/* Custom Styles for Announcement */
+.bg {
+  width: 100.1%;
+  height: 300px;
+  object-fit: cover;
+}
 
+.custom-blue {
+  color: #0E58A3;
+}
 
+.card {
+  width:  362px;
+  height: 620px;
+  border-radius: 30px;
+  padding: 15px 5px 15px 5px;
+  background-color: #f2f2f2;
+}
 
+.custom-font-size {
+  font-size: 14px;
+}
 
+.card-img-top {
+  object-fit: contain;
+  height: 47%;
+}
 
+.card-shadow {
+  box-shadow: 2px 4px 10px 2px rgba(0, 0, 0, 0.2);
+}
 
+@media (min-width: 850px) {
+.carousel-inner .carousel-item > .row {
+  display: flex;
+  justify-content: center; 
+  margin-left: auto;
+  margin-right: auto; 
+  width: fit-content;
+}
+.carousel-inner .carousel-item .col {
+  flex: 0 0 auto;
+  max-width: none; 
+  width: auto;
+  padding: 0 30px;
+}
+}
 
+.carousel-control-prev,
+.carousel-control-next {
+  width: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 1 !important; 
+  pointer-events: auto; 
+}
+
+.carousel-control-prev {
+  left: -4%;
+  z-index: 10;
+}
+
+.carousel-control-next {
+  right: -4%;
+  z-index: 10;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-image: none; 
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+}
+
+.carousel-control-prev-icon::after,
+.carousel-control-next-icon::after {
+  content: '';
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: solid #0E58A3;
+  border-width: 0 3px 3px 0;
+  transform: rotate(135deg); 
+}
+
+.carousel-control-next-icon::after {
+  transform: rotate(-45deg); 
+}
+
+.carousel-indicators .active {
+  background-color: #0E58A3;
+  transform: scale(1.1);
+}
+
+.carousel-indicators button:hover {
+  background-color: #0E58A3;
+  transform: scale(1.1);
+}
+
+/* Custom Styles for Pub-Mats */
+.my-3 {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.pb-card-modules {
+  height: 580px;
+  border-radius: 30px;
+  padding: 15px 5px 15px 5px;
+  background-color: #f2f2f2;
+}
+
+.pb-img {
+  object-fit: contain;
+  height: 80%;
+  border-radius: 20px;
+  margin: 5px;
+}
+
+.nav-item.sidebar-nav-item.active {
+  background-color: #007bff;
+  color: white;
+}
