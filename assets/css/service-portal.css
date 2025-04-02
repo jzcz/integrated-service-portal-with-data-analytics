@@ -86,46 +86,6 @@ li.sidebar-nav-item:hover {
 
 }
 
-.form-box {
-  width: 700px;
-  background-color: white;
-}
-
-.form-title {
-  background-color: #08437F;
-  color: white;
-  padding: 3px 0;
-}
-
-.form-title p {
-  margin: auto;
-}
-
-.sliding-form label {
-  font-size: 14px;
-  color:rgb(75, 75, 75)
-}
-
-.form-control, option {
-  font-size: 14px;
-}  
-
-.form-text-header {
-  font-size: 18px;
-}
-
-.form-wrapper{
-  width: 100%;
-}
-
-.next-btn {
-  padding: 8px 26px
-}
-
-.hidden {
-  display: none;
-}
-
 /* Custom Styles for Announcement */
 .bg {
   width: 100.9%;
