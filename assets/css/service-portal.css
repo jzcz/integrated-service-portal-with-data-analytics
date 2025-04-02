@@ -14,7 +14,12 @@ main {
 #sidebar{
   width: var(--sidebar-width);
   background-color: var(--sidebar-color);
-  color:rgb(223, 223, 223)
+  color:rgb(223, 223, 223);
+  position: fixed;
+  top: var(--navbar-height);
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 .navbar {
