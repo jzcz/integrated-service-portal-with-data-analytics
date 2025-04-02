@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
-/* Custom Styles for the Service Portal */
+
 :root {
-  --sidebar-width: 300px;
-  --navbar-height: 70px;
-  --sidebar-color: #08437F;
+    --sidebar-width: 300px;
+    --navbar-height: 70px;
+    --sidebar-color: #08437F;
 }
 
 main {
-  margin-top: var(--navbar-height);
+    margin-top: var(--navbar-height);
 }
 
 #sidebar{
@@ -20,70 +20,63 @@ main {
   height: 100%;
   padding: 12px;
   box-sizing: border-box;
+  z-index: 2;
 }
 
 .navbar {
-  height: var(--navbar-height);
-  background-color: white;
-  border-bottom: 3px solid var(--sidebar-color);
+    height: var(--navbar-height);
+    background-color: white;
+    border-bottom: 3px solid var(--sidebar-color);
+    
 }
 
-nav div a span{
-  font-family: "Rubik", sans-serif;
+nav div a span {
+    font-family: "Rubik", sans-serif;
 }
 
 li hr {
-  height: 3px;
-  background-color: white;
+    height: 3px;
+    background-color: white;
 }
 
 .nav-link-title {
-  color: white;
-  font-size: 18px
+    color: white;
+    font-size: 18px;
 }
 
 li.sidebar-nav-item {
-  font-size: 14px;
-  padding: 0 6px;
-  border-radius: 8px;
-  transition: 0.3s;
+    font-size: 14px;
+    padding: 0 6px;
+    border-radius: 8px;
+    transition: 0.3s;
 }
 
 li.sidebar-nav-item:hover {
-  background-color: #4e79a4;
+    background-color: #4e79a4;
 }
 
 .navbar-toggler {
-  display: block;
+    display: block;
 }
 
 @media only screen and (min-width: 800px) {
-  body {
-      overflow: auto !important;
-  }
+    main {
+        margin-left: var(--sidebar-width);
+    }
 
-  main {
-      margin-left: var(--sidebar-width);
-  }
+    #sidebar .offcanvas-start {
+        position: static;
+        transform: none;
+        visibility: visible;
+    }
 
-  #sidebar {
-      top: var(--navbar-height);
-  }
+    .offcanvas-backdrop {
+        display: none !important;
+    }
 
-  #sidebar .offcanvas-start {
-      position: fixed; 
-      top: 0;
-      left: 0;
-      bottom: 0;
-  }
-  .offcanvas-backdrop {
-      display: none !important;
-  }
-
-  .navbar-toggler {
-      display: none
-  }
-
+    .navbar-toggler {
+        display: none;
+    }
 }
 
 /* Custom Styles for Announcement */
@@ -123,6 +116,7 @@ li.sidebar-nav-item:hover {
   background-color: #0E58A3;
   color: white;
 }
+
 
 @media (max-width: 850px) {
   .card {
@@ -269,4 +263,129 @@ li.sidebar-nav-item:hover {
 
 .module-btn:hover {
   background-color: #0A4A87;
+}
+
+/* Custom styles for good moral cert req form page  */
+
+.form-box {
+  width: 100%;
+  max-width: 100%;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.form-header-container {
+  background-image: url('../../static/gmc-reqform.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  padding: 1rem;
+  color: white;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
+    opacity: 1; 
+    z-index: 0;
+}
+}
+
+.form-header-container h1,
+.form-header-container p {
+  position: relative;
+  color: white;
+  margin: 0;
+}
+
+
+.sliding-form label {
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  color: #212529;
+  font-weight: bold;
+}
+
+.form-control,
+option {
+  font-size: 1rem;
+}
+
+.form-text-header {
+  font-size: 1.25rem;
+}
+
+.form-wrapper {
+  width: 100%;
+}
+
+.custom-submit-button {
+  background-color: #08437F;
+  border-color: #08437F;
+  width: auto;
+  padding: 0.5rem 1rem;
+}
+
+.custom-submit-button:hover {
+  background-color: #063567;
+  border-color: #063567;
+}
+
+.custom-submit-button:focus {
+  box-shadow: 0 0 0 0.25rem rgba(8, 67, 127, 0.5);
+}
+
+.hidden {
+  display: none;
+}
+
+.specify-reason-row label,
+.specify-reason-row textarea {
+  font-style: italic;
+}
+
+.image-upload-area {
+  border: 2px dashed #ced4da;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.upload-text {
+  color: #6c757d;
+  margin-bottom: 0;
+}
+
+#proofOfImage {
+  display: none;
+}
+
+.custom-footer-color {
+  background-color:#063567;
 }
