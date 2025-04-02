@@ -44,7 +44,7 @@
                                 March 29, 2024 <br>
                                 Good news! The Quezon City Youth Development Office will go to the Main Campus of Quezon City University at San Bartolome, Novaliches to conduct onsite assistance to QCU Students. This will be held on 𝗔𝗽𝗿𝗶𝗹 𝟮-𝟯, 𝟮𝟬𝟮𝟰, from 8 AM to 5 PM at the QCU, San Bartolome Campus, TechVoc GYM…
                                 </p>
-                                <a href="#" class="btn btn-sm">READ MORE</a>
+                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
                             </div>
                        </div>
                </div>
@@ -59,7 +59,7 @@
                                 FOR: All Year Levels <br>     
                                 The Quezon City University (QCU) Guidance Unit invites all students to participate in a quick and confidential Mental Health Check-In. This initiative aims to provide psychological support to students experiencing mental health issues or emotional distress...
                                 </p>
-                                <a href="#" class="btn btn-sm">READ MORE</a>
+                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
                             </div>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                                 FOR: All 1st and 2nd year QCians on all campuses are required to take the online psychological test.
                                 The Guidance & Counseling Unit of Quezon City University (QCU) is launching the Online Psychological Testing for all 1st and 2nd-year QCians across all...
                                 </p>
-                                <a href="#" class="btn btn-sm">READ MORE</a>
+                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                                 <p class="card-text custom-font-size">
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                                 </p>
-                                <a href="#" class="btn btn-sm">READ MORE</a>
+                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
                             </div>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                                 <p class="card-text custom-font-size">
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                                 </p>
-                                <a href="#" class="btn btn-sm">READ MORE</a>
+                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
                             </div>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                             <div class="card-body text-center">
                                 <h6 class="card-title"><u>QCU Guidance Office Launches Online Psychological Testing for 1st and 2nd Year Students (AY 2024-2025) on All Campuses</u></h6>
                                 <p class="card-text custom-font-size">Description</p>
-                                <a href="#" class="btn btn-sm">READ MORE</a>
+                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
                             </div>
                         </div>
                     </div>
