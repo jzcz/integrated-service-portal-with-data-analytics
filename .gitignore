@@ -6,7 +6,6 @@
 
 # Composer Files
 vendor/
-composer.lock
 
 # XAMPP/MAMP/WAMP files 
 htdocs/
