@@ -17,67 +17,85 @@
         include(__DIR__ . '/../components/service-portal/navbar.php');
     ?>
     <main>
-    <!--- COUNSELING MODULES --->
+    <!--- MODULES --->
     <h2 class="text-center mb-4 fw-bold custom-blue pt-3">Publication Materials</h2>
-    <div class="container mt-4">
+<div class="container mt-4">
     <div class="d-flex justify-content-center">
         <div class="row row-cols-1 row-cols-md-3 g-5 justify-content-center">
             <div class="col col-md-4 mx-auto">
                 <div class="pb-card-modules card-shadow">
-                    <img src="/static/module1.png" class="pb-img card-img-top img-fluid">
+                    <img src="../../static/module1.png" class="pb-img card-img-top img-fluid">
                     <div class="card-body">
                         <h5 class="card-title text-center fw-bold custom-blue">Module Title</h5>
                         <p class="card-text text-center">Description</p>
+                        <div class="text-center">
+                            <a href="#" class="module-btn">View Module</a>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col col-md-4 mx-auto">
                 <div class="pb-card-modules card-shadow">
-                    <img src="/static/module2.png" class="pb-img card-img-top img-fluid">
+                    <img src="../../static/module2.png" class="pb-img card-img-top img-fluid">
                     <div class="card-body">
                         <h5 class="card-title text-center fw-bold custom-blue">Module Title</h5>
                         <p class="card-text text-center">Description</p>
+                        <div class="text-center">
+                            <a href="#" class="module-btn">View Module</a>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col col-md-4 mx-auto">
                 <div class="pb-card-modules card-shadow">
-                    <img src="/static/module3.png" class="pb-img card-img-top img-fluid">
+                    <img src="../../static/module3.png" class="pb-img card-img-top img-fluid">
                     <div class="card-body">
                         <h5 class="card-title text-center fw-bold custom-blue">Module Title</h5>
                         <p class="card-text text-center">Description</p>
+                        <div class="text-center">
+                            <a href="#" class="module-btn">View Module</a>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col col-md-4 mx-auto">
                 <div class="pb-card-modules card-shadow">
-                    <img src="/static/module4.png" class="pb-img card-img-top img-fluid">
+                    <img src="../../static/module4.png" class="pb-img card-img-top img-fluid">
                     <div class="card-body">
                         <h5 class="card-title text-center fw-bold custom-blue">Module Title</h5>
                         <p class="card-text text-center">Description</p>
+                        <div class="text-center">
+                            <a href="#" class="module-btn">View Module</a>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col col-md-4 mx-auto">
                 <div class="pb-card-modules card-shadow">
-                    <img src="/static/module5.png" class="pb-img card-img-top img-fluid">
+                    <img src="../../static/module5.png" class="pb-img card-img-top img-fluid">
                     <div class="card-body">
                         <h5 class="card-title text-center fw-bold custom-blue">Module Title</h5>
                         <p class="card-text text-center">Description</p>
+                        <div class="text-center">
+                            <a href="#" class="module-btn">View Module</a>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="col col-md-4 mx-auto">
                 <div class="pb-card-modules card-shadow">
-                    <img src="/static/module6.png" class="pb-img card-img-top img-fluid">
+                    <img src="../../static/module6.png" class="pb-img card-img-top img-fluid">
                     <div class="card-body">
                         <h5 class="card-title text-center fw-bold custom-blue">Module Title</h5>
                         <p class="card-text text-center">Description</p>
+                        <div class="text-center">
+                            <a href="#" class="module-btn">View Module</a>
+                        </div>
                     </div>
                 </div>
             </div>
