@@ -19,8 +19,9 @@ body {
 
 main {
     margin-top: var(--navbar-height);
-    margin-left: 0;
+    margin-left: var(--sidebar-width);
     padding-bottom: 100px; 
+    box-sizing: border-box;
 }
 
 #sidebar{
@@ -92,12 +93,13 @@ li.sidebar-nav-item:hover {
 
 
 .form-box {
-    width: 700px;
+    width: 100%;
+    max-width: 100%;
     background-color: white;
     margin-left: auto;
     margin-right: auto;
-    z-index: 10;
     position: relative;
+    box-sizing: border-box;
 }
 
 .form-header-container {
@@ -109,7 +111,11 @@ li.sidebar-nav-item:hover {
     padding: 1rem;
     color: white;
     text-align: center;
-    width: 1051px;
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
 
     &::before {
       content: "";
@@ -127,7 +133,6 @@ li.sidebar-nav-item:hover {
 .form-header-container h1,
 .form-header-container p {
     position: relative;
-    z-index: 1;
     color: white;
     margin: 0;
 }
