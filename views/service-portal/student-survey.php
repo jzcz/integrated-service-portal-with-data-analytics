@@ -37,7 +37,7 @@
     </p>
 <div></div>
 
-  <!-- Container for circles and labels -->
+
   <div class="studsurv-circle-row">
     <div class="studsurv-circle-with-label">
       <div class="studsurv-circle-indicator" style="background-color: #29477B;"></div>
@@ -190,7 +190,7 @@
   <b>SUBMIT</b>
 </button>
 
-<!-- OPENING MODAL -->
+
 <div id="studentsurvopeningModal" class="studsurv-modal studsurvmodal-fade">
   <div class="studsurv-modal-content">
     <div class="studsurv-modal-header">
@@ -212,7 +212,7 @@
   </div>
 </div>
 
-<!-- CLOSING MODAL -->
+
 <div id="studsurvclosingModal" class="studsurv-modal studsurvmodal-fade">
   <div class="studsurv-closingmodal-content">
     <div class="studsurv-modal-header">
@@ -232,37 +232,34 @@
   </div>
 </div>
 
-<!-- FOOTER -->
+
 <footer class="studsurv-footer">
   <p>&copy; 2025 QCU Guidance and Counseling. All Rights Reserved.</p>
 </footer>
 
-<!-- JAVASCRIPT LOGIC -->
+
 <script>
-// Show the opening modal when the page loads
+
 window.onload = function () {
   document.getElementById("studentsurvopeningModal").style.display = "flex";
 };
 
-// Hide the opening modal when "Get Started!" is clicked
+
 document.getElementById("studsurvgetBtn").addEventListener("click", function () {
   document.getElementById("studentsurvopeningModal").style.display = "none";
 });
 
-// Show the closing modal when the Submit button is clicked
+
 document.getElementById("studsurvtsubmitBtn").addEventListener("click", function (e) {
-  e.preventDefault(); // Prevent form submission (if applicable)
+  e.preventDefault(); 
   document.getElementById("studsurvclosingModal").style.display = "flex";
 
-  // Optional: Reset form after submit
-  // document.getElementById("yourFormID").reset();
+
 });
 
-// Hide the closing modal when "Okay" is clicked
 document.getElementById("studsurvcloseBtn").addEventListener("click", function () {
   document.getElementById("studsurvclosingModal").style.display = "none";
 });
-
 </script>
        
 </main>
