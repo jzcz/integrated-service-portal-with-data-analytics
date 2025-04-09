@@ -10,7 +10,7 @@
             <span class="navbar-toggler-icon" data-bs-target="#sidebar"></span>
         </button>
         <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-        <img src="../../../static\qcu-logo.jpg" alt="Logo" width="45" height="45" class="d-inline-block align-text-top">
+        <img src="../../static/qcu-logo.jpg" alt="Logo" width="45" height="45" class="d-inline-block align-text-top">
         <span class="navbar-brand mb-0 h1 align-self-center">QCU Guidance and Counseling Unit</span>
         </a>           
     </div>
