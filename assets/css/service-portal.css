@@ -389,3 +389,161 @@ option {
 .custom-footer-color {
   background-color:#063567;
 }
+
+/* Custom styles for Assessments  */
+.assessment-banner {
+  background-image: url('../../static/assessment_BG.png'); 
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.assessmenttitle-text {
+  background-color: none;
+  width: 100%;
+  text-align: center;
+  padding: 5px 0;
+  font-weight: bold;
+  font-size: 2rem;
+  color: #0E58A3;
+}
+
+.card-assessment {
+  width: 18rem;
+  max-width: 350px;
+  min-height: 300px;
+  padding: 15px 15px 15px 15px;
+  border: 2px solid #0E58A3;
+  background-color: white;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.assessmentbtn {
+  background-color: #0E58A3;
+  width: 150px;
+}
+/* END of Custom styles for Assessments  */
+
+/* Custom styles for View-Assessments  */
+.va_title {
+  background-color: none;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  font-weight: bold;
+  font-size: 2rem;
+  color: #0E58A3;
+  }
+
+.view_assessment-box {
+  border: 1px solid #0E58A3;
+  padding: 2rem;
+  border-radius: 5px;
+}
+
+.va_question-separator {
+  border-top: 1px solid #ddd;
+  margin: 1.5rem 0;
+}
+
+.va_submit-btn {
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  width: 150px;
+  border-radius: 20px;
+  background-color: #0E58A3;
+  border: none;
+}
+
+.va_submit-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.va-legend-label input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  cursor: not-allowed;
+  margin-bottom: 4px;
+}
+
+.va-legend-label input.sd,
+.va-legend-label input.sa {
+  background-color: #283747;
+}
+
+.va-legend-label input.d,
+.va-legend-label input.a {
+  background-color: #707b7c;
+}
+
+.va-legend-label input.n {
+  background-color: #aab7b8;
+}
+
+.va-legend-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.9rem;
+  gap: 4px;
+}
+
+.va_custom-radio {
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #999;
+  border-radius: 50%;
+  outline: none;
+  margin: 0 10px;
+  position: relative;
+  background-color: white;
+  cursor: pointer;
+}
+
+.va_custom-radio::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.va_custom-radio.sd:checked::before {
+  background-color: #283747;
+}
+
+.va_custom-radio.d:checked::before {
+  background-color: #707b7c;
+}
+
+.va_custom-radio.n:checked::before {
+  background-color: #aab7b8;
+}
+
+.va_custom-radio.a:checked::before {
+  background-color: #707b7c;
+}
+
+.va_custom-radio.sa:checked::before {
+  background-color: #283747;
+}
+/* END of Custom styles for View-Assessments  */
