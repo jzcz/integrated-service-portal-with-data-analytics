@@ -21,6 +21,41 @@
             position: relative;
             min-height: 100vh;
         }
+     
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            padding: 0;
+        }
+        
+        body {
+            display: flex;
+        }
+        
+        .container-fluid {
+            height: 100vh;
+            display: flex;
+            padding: 0;
+            padding-left: 0;
+        }
+        
+        .row {
+            display: flex;
+            height: 100%;
+        }
+        
+        .image-container {
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
