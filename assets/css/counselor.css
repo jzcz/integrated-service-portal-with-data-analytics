@@ -2,7 +2,7 @@
 
 :root {
   --primary-color: #08437F;
-  --sidebar-width: 350px;
+  --sidebar-width: 330px;
 }
 
 /* DO NOT ADD MORE STYLES FOR THE MAIN ELEMENT */
@@ -121,4 +121,12 @@ li.sidebar-nav-item:hover {
   font-size: 18px;
   color: white;
 }
+
+.logout-btn {
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
+
 /* End Custom styles for sidebar for counselor dashboard */
