@@ -1,0 +1,377 @@
+Student Survey
+.studsurv-opening-img {
+  position: fixed;       
+  z-index: -1;            
+}
+
+.studsurvmodal-fade {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+.studsurv-modal {
+  display: block; /* Show on page load */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.studsurv-modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  height: 57%;
+}
+
+.studsurv-modal-body {
+  padding: 10px 0;
+  text-align: justify;
+}
+
+.studsurv-modal-footer {
+  text-align: right;
+  padding-top: 10px;
+}
+
+.studsurv-btn-secondary {
+  background-color: #0E58A3;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.studsurv-btn-secondary:hover {
+  background-color: #0056b3;
+}
+
+
+
+.studsurv-text-container {
+  position: absolute;           
+  top: 100%;                    
+  left: 50%;                    
+  transform: translate(-50%, -50%); 
+  text-align: center;           
+  background: rgba(0, 0, 0, 0.5); 
+  padding: 20px 40px;           
+  border-radius: 8px;          
+  z-index: 2;                  
+}
+
+
+.studsurv-text-content h1 {
+  color: rgb(14, 88, 163);
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  position: absolute;
+  width: 400px;
+  height: 44px;
+  left: 900px;
+  top: 100px;
+}
+
+.studsurv-container {
+  display: flex;
+  flex-direction: column;
+  width: 1300px; 
+  width: 780px;
+  height: 44px;
+  left: 500px;
+  top: 660px;
+  position: absolute;
+  z-index: 2; /* Ensures that it stays below the modal */
+}
+
+.studsurv-info-text-container {
+  display: flex;
+  flex-direction: column;
+  width: 1300px; 
+  width: 780px;
+  height: 44px;
+  left: 700px;
+  top: 150px;
+  position: absolute;
+}
+
+
+.studsurv-label, .studsurv-info-text {
+  margin-top: 30px;
+  width: 1200px; 
+}
+
+.studsurv-circle-row {
+  display: flex;
+  justify-content: center; /* Centers the items horizontally */
+  position: absolute; /* Absolute positioning */
+  top: 80px; /* You can adjust this value to move it vertically */
+  left: 50%; /* Start from the center horizontally */
+  transform: translateX(-50%); /* Adjust to truly center the container */
+  width: 1000px;
+  gap: 100px; /* Adjustable space between items */
+}
+
+
+
+  .studsurv-circle-with-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* To keep circle and label independent */
+    width: 100px;
+    text-align: center;
+  }
+
+  .studsurv-circle-indicator {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    position: absolute; /* Fixed position for the circle */
+    top: 0; /* Keeps the circle at the top of its container */
+  }
+
+  .studsurv-circle-label {
+    font-size: 12px;
+    color: #333;
+    margin-top: 35px; /* Adjust this to control space between the circle and the label */
+    width: 150px;
+  }
+
+  /* Add outline for Neutral circle */
+  .studsurv-neutral-circle {
+    border: 1px solid #333; /* Adjust the outline color and thickness */
+  }
+
+
+.studsurv-form-container {
+    background: white;
+    padding: 20px;
+    border: 2px solid blue; /* Blue border around the form */
+    width: 950px;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 300px; /* Add space above it to ensure it is below the text container */
+    margin-bottom: 100px;
+    height: 650px;
+    box-shadow: none; /* No box shadow */
+    z-index: 0; /* Ensures that it stays below the modal */
+  }
+  .studsurv-label-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 100px; /* Adjust space after label */
+    text-align: left; /* Ensures all label containers are aligned left */
+    
+  }
+
+  .studsurv-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    display: inline-block; /* Ensures the label content is aligned properly */
+    text-align: left; /* Centers the text inside the label */
+    margin-bottom: 50px; /* Space between label and the line (adjustable) */
+  }
+
+  /* Line between labels */
+  .studsurv-label-border {
+    width: 100%;
+    height: 2px; /* Line thickness */
+    background-color: #333; /* Line color */
+    margin-bottom: 15px; /* Space between the line and the next label */
+    max-width: 90%; /* Makes the line match the width of the label */
+    margin-left: auto; /* Centers the line */
+    margin-right: auto; /* Centers the line */
+
+    
+  }
+  /* Remove the line after the last label */
+  .studsurv-label-container label:last-child + .studsurv-label-border {
+    display: none;
+  }
+  
+
+  /* Styling for the radio buttons */
+  .studsurv-radio-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    width: 50%; /* Set width of the container */
+    margin-left: auto; /* Centers the container horizontally */
+    margin-right: auto; /* Centers the container horizontally */
+  }
+
+.studsurv-radio-button {
+  display: none;
+}
+
+
+.studsurv-radio-label1,
+.studsurv-radio-label2,
+.studsurv-radio-label3,
+.studsurv-radio-label4,
+.studsurv-radio-label5 {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+}
+
+.studsurv-radio-label1 { background-color: #29477B; }
+.studsurv-radio-label2 { background-color: #4472C4; }
+.studsurv-radio-label3 { background-color: #FFFFFF; }
+.studsurv-radio-label4 { background-color: #8197D0; }
+.studsurv-radio-label5 { background-color: #C7D5FC; }
+
+.studsurv-radio-button:checked + label::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #232326; /* New inner circle color when selected */
+}
+
+.studsurv-position-radi {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.studsurv-question-block {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.studsurv-label-border {
+  border-bottom: 0.5px solid #0E58A3;
+  margin: 20px 0;
+  width: 100%; /* Control the width of the line */
+  margin-left: auto;
+  margin-right: auto; /* Centers the line horizontally */
+}
+.studsurv-btn-primary {
+  background-color: #0E58A3;
+  color: white;
+  padding: 10px 50px;
+  border-radius: 20px;
+  border: none;
+  display: block; /* Makes the button a block element */
+  margin-left: auto; /* Centers the button horizontally */
+  margin-right: auto; /* Centers the button horizontally */
+  text-align: center; /* Centers text inside the button (optional) */
+  margin-top: 20px;
+  height: 45px;
+}
+
+.studsurv-btn-primary:hover {
+  background-color: #0E58A3;
+}
+
+
+.studsurv-footer {
+  width: 100%;
+  background-color: rgb(14, 88, 163);
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 14px;
+  position: fixed; 
+  bottom: 0;
+  left: 0;
+}
+
+
+.studsurv-modal-header h3 {
+  color:  rgb(14, 88, 163); 
+  text-align: center;
+}
+  
+
+
+.studsurvmodal-fade {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+.studsurv-closing-modal {
+  display: block; /* Show on page load */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.studsurv-closingmodal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 45%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  height: 25%;
+}
+
+.studsurv-modal-body {
+  padding: 10px 0;
+  text-align: justify;
+}
+
+.studsurv-modal-footer {
+  text-align: right;
+  padding-top: 10px;
+}
+
+.studsurv-btn-close {
+  background-color: #0E58A3;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: block;         /* Ensure it can be centered as a block */
+  margin: 20px auto;      /* This centers it horizontally */
+  width: 160px;
+  margin-top: 5px;
+
+}
+.studsurv-btn-close:hover {
+  background-color: #0056b3;
+}
+

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
    <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/service-portal.css">
+    <link rel="stylesheet" href="../../assets/css/student-survey.css">
 </head>
 <body>
     <?php
@@ -197,7 +198,7 @@
       <h3>Share Your Feedback</h3>
     </div>
 
-    <img src="../../static/studdent-survey-opening.png" alt="Student Survey Opening" width="470" height="200" class="studsurv-opening-img">
+    <img src="../../static/studdent-survey-opening.png" alt="Student Survey Opening" width="470" height="200" class="studsurv-opening-img" position="fixed">
     
     <div class="studsurv-modal-body">
       <p>
