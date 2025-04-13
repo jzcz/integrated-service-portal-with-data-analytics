@@ -11,12 +11,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
    <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/service-portal.css">
+    <link rel="stylesheet" href="../../assets/css/student-survey.css">
+    <style>
+      main {
+        min-height: 50vh; 
+        padding-bottom: 175px; 
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
 </head>
 <body>
     <?php
         include(__DIR__ . '/../components/service-portal/navbar.php');
-
-        
     ?>
     <main>
 
@@ -197,7 +204,7 @@
       <h3>Share Your Feedback</h3>
     </div>
 
-    <img src="../../static/studdent-survey-opening.png" alt="Student Survey Opening" width="470" height="200" class="studsurv-opening-img">
+    <img src="../../static/studdent-survey-opening.png" alt="Student Survey Opening" width="470" height="200" class="studsurv-opening-img" position="fixed">
     
     <div class="studsurv-modal-body">
       <p>
@@ -263,8 +270,6 @@ document.getElementById("studsurvcloseBtn").addEventListener("click", function (
 </script>
        
 </main>
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
  </body>
 </html>     

@@ -11,16 +11,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
    <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="../../assets/css/service-portal.css">
+    <link rel="stylesheet" href="../../assets/css/appointment.css">
+    <style>
+      main {
+        min-height: 50vh; 
+        padding-bottom: 175px; 
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
 </head>
 <body>
     <?php
         include(__DIR__ . '/../components/service-portal/navbar.php');
-
-        
     ?>
     <main>
         <header class="header">
-                <img src="../../static/appoint_header.jpg" alt="Appointment Header" width="1597" height="550" class="appoint-header-img">
+                <img src="../../static/appoint_header.jpg" alt="Appointment Header" width="1597" height="550" class="appoint-header-img" position="fixed" >
                 <div class="appoint-text-content">
                     <h1>Schedule Appointment Form </h1>
                 </div>
@@ -50,24 +57,23 @@
                 <div class="appoint-seperate-inputs">
                     <input type="text" id="lastname" name="lastname" placeholder="Last Name">
                     <input type="text" id="firstname" name="firstname" placeholder="First Name">
-                    <input type="text" id="mi" name="middleinitial" placeholder="M.I">
-                </div>
+                    <input type="text" id="mi" name="middleinitial" placeholder="Middle Name">
             </div>
 
-    
-            <div class="appoint-row-group">
+  
                 <div class="appoint-input-group">
-                    <label for="course/yr/sec">Course/Year/Section</label>
-                    <div class="multi-input-group">
-                         <input type="text" id="course/yr/sec" name="course/yr/sec"  placeholder="XX-XX-XX">
-                    </div>
-                </div>
+                <label for="course/yr/sec">Course/Year/Section</label>
+                <div class="appoint-seperate-inputs">
+                    <input type="text" id="course" name="course" placeholder="Course">
+                    <input type="text" id="year" name="year" placeholder="Year">
+                    <input type="text" id="section" name="section" placeholder="Section">
+            </div>
 
                 <div class="appoint-input-group">
                     <label for="personal-contact-no">Personal Contact Number</label>
                     <input type="text" id="personal-contact-no" name="personal-contact-no" placeholder="+63 000 000 0000">
                 </div>
-            </div>
+        
 
             <div class="appoint-input-group">
                 <label for="qcu-email">QCU Email Address</label>
@@ -276,9 +282,6 @@ appointtermsModal.addEventListener('click', function (event) {
   });
 </script>
 </main>
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
  </body>
 </html>     
