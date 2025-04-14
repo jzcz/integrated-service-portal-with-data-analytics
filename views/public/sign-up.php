@@ -56,7 +56,7 @@
             }
         }
     }
-    
+    $db_conn->close();
 ?>
 
 <!DOCTYPE html>
