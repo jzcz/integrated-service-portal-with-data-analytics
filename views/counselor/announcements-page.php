@@ -13,42 +13,37 @@
     <link rel="stylesheet" href="../../assets/css/counselor.css">
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            overflow: auto !important;
-            background-color: white;
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
-        }
+    margin: 0;
+    padding: 0;
+    overflow: auto !important;
+    background-color: white;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
 
-        html,
-        body {
-            height: 100%;
-            overflow: hidden;
-            padding: 0;
-        }
+.container-fluid {
+    height: 100vh;
+    display: flex;
+    padding: 0;
+    padding-left: 0;
+    overflow-x: hidden;
+    margin: 0;
+}
 
-        .container-fluid {
-            height: 100vh;
-            display: flex;
-            padding: 0;
-            padding-left: 0;
-            overflow-x: hidden;
-            margin: 0;
-        }
-
-        .row {
-            display: flex;
-            height: 100%;
-            flex-grow: 1;
-        }
+.row {
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
+}
 
     </style>
 </head>
