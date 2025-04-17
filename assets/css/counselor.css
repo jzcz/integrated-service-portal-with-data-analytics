@@ -285,3 +285,112 @@ main .span-text {
   font-size: smaller;
 }
 /* End Custom styles for announcements for counselor dashboard */
+
+/* Start Custom styles for counselor pubmats */
+
+.pubmats_c-banner {
+  background-image: url('../../static/pm_counselor-bg.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 350px;
+  width: 100%;
+}
+
+.pubmats_c-title-text {
+  font-weight: bold;
+  font-size: 2rem;
+  color: #0E58A3;
+}
+
+.edit-pubmats_c-btn {
+  background-color: #1C6DBF;
+  border: none;
+  width: auto;
+}
+
+.edit-pubmats_c-btn:hover {
+  background-color: #0E58A3;
+  border: none;
+}
+
+.delete-pubmats_c-btn {
+  background-color: #cb4335;
+  border: none;
+  width: auto;
+}
+
+.delete-pubmats_c-btn:hover {
+  background-color: #B02A37;
+  border: none;
+}
+
+.col-md-4-pubmats_c-materials-col-lg-6 {
+  border-radius: 15px;
+  background-color: #E6E6E6;
+}
+
+.col-pubmats_c-materials { 
+  min-height: 220px;
+  display: flex;
+  justify-content: center;
+}
+
+.card-pubmats_c-materials {
+  flex-grow: 1;
+  background-color: #E6E6E6;
+  max-width: 550px;
+}
+
+.pubmats_c-images {
+  object-fit: cover;
+  height: 100%;
+  border-radius: 10px;
+  margin: 14.5px;
+}
+
+.header-pubmats_c {
+  background-color: #0E58A3;
+}
+
+.row-pubmats_c {
+  width: 100%;
+}
+
+.container-pubmats_c {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pagination-pubmats_c {
+  display: flex;
+  justify-content: end;
+  align-items: end; 
+}
+
+.col-pubmats_c {
+  flex: 0 0 auto;
+  width: 100%; 
+}
+
+@media (min-width: 768px) {
+  .col-pubmats_c {
+    width: 66%;
+  }
+}
+
+.body-pubmats_c {
+  height: 100%;
+  padding: 15px 15px 0 5px;
+}
+
+.badge-pubmats_c {
+  background-color: #397999;
+  width: auto; 
+  height: auto;
+  padding: 0.25em 0.4em; 
+  font-size: 0.875rem; 
+}
+
+/* End Custom styles for counselor pubmats */
