@@ -21,7 +21,7 @@
     <div class="pubmats_c-banner"></div>
 
       <!-- TITLE CENTERED, BUTTON RIGHT -->
-    <div class="container mt-4 position-relative">
+    <div class="container pt-4 position-relative">
       <h2 class="text-center pubmats_c-title-text">Publication Materials</h2>
     <button class="btn pubmats_c-btn btn-primary position-absolute end-0 top-0" data-bs-toggle="modal" data-bs-target="#addNewModal">
       <i class="bi bi-plus-lg"></i> <span class="fw-bold">Add New</span>
