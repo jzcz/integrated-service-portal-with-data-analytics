@@ -184,7 +184,7 @@
   </div>
 </div>
     <div class="sign-up-bg-img-container">
-        <img src="../../static/qcu-bg-img.jpg"" alt="">
+        <img src="../../static/qcu-bg-img.jpg" alt="">
     </div>
     <div class="">
         <div class="signup-form-box mx-auto pt-4 rounded-2">
