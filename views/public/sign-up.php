@@ -193,7 +193,7 @@
             </div>
             <div class="signup-form-wrapper">
                 <div class="mb-2 pt-3 flex-column gap-2 form-header d-flex align-items-center justify-content-center">
-                    <img src="http://localhost/integrated-service-portal-with-data-analytics/static/qcu-logo.jpg" width="60" height="60" alt="">
+                    <img src="../../static/qcu-logo.jpg" width="60" height="60" alt="">
                     <p class="fw-bold">Guidance and Counseling Unit</p>
                 </div>
                 <form method="POST" action="" id="signUpForm" class="d-flex flex-column gap-4 container-fluid px-3" >
