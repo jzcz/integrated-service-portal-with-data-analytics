@@ -12,35 +12,35 @@
                     <li class="fw-bold nav-link-title">General</li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2 d-flex align-items-center gap-2">
                         <i class="bi bi-megaphone-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="">Announcements</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/announcements-page.php">Announcements</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-book-half"></i>
-                        <a class="nav-link active" aria-current="page" href="#">Publication Materials</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/pubmats.php">Publication Materials</a>
                     </li>
                     <li class="my-1"><hr /></li>
                     <li class="fw-bold nav-link-title">Services</li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-calendar-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="#">Appointments</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/appointments.php">Appointments</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-pencil-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="#">Assessments</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/">Assessments</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-ui-radios-grid"></i>
-                        <a class="nav-link active" aria-current="page" href="#">Surveys</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/">Surveys</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-file-earmark-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="#">Good Moral Certificate Requests</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/">Good Moral Certificate Requests</a>
                     </li>
                     <li class="my-1"><hr /></li>
                     <li class="fw-bold nav-link-title">Account</li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-person-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="#">Profile</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/">Profile</a>
                     </li>
                     <li class="py-2 nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-power"></i>
@@ -55,7 +55,7 @@
 </div>    
 <!--- SIDE NAVBAR END --->
 
-<!--- LOGIN MODAL START --->
+<!--- LOGOUT MODAL START --->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
