@@ -394,3 +394,230 @@ main .span-text {
 }
 
 /* End Custom styles for counselor pubmats */
+
+/* Start Custom styles for counselor pubmats */
+
+.banner-surveys_c {
+  background-color: #F0F8FF; 
+  border-color: #9DCEFF;
+}
+
+.btext-surveys_c {
+  color: #08437F;
+}
+
+.title-surveys_c {
+  font-weight: bold;
+  font-size: 2rem;
+  color: #0E58A3;
+}
+
+.btn-surveys_c {
+  background-color: #0E58A3;
+  top: 3rem; 
+  right: 0;
+}
+
+.btn-surveys_c:hover {
+  background-color: #1C6DBF;
+}
+
+.btn-viewsurvey_c {
+  background-color: #1C6DBF;
+  color: white;
+  border-radius: 15px;
+}
+
+.btn-viewsurvey_c:hover {
+  background-color: #0E58A3;
+  color: white;
+}
+
+.table-surveys_c {
+  border: 1px solid #dee2e6; 
+  border-radius: 0.25rem;
+  border-collapse: separate;
+}
+
+.column-surveys_c {
+  max-width: 250px;
+}
+
+.border-surveys_c {
+  border-collapse: separate; 
+  border-spacing: 0;
+}
+
+.pagination-surveys_c {
+  background-color: #0E58A3;
+}
+
+.pagination-surveys_c:hover {
+  background-color: #1C6DBF;
+}
+
+.pagination-surveys_c.active {
+  background-color: #0E58A3;
+}
+
+.custom-margin-right {
+  margin-right: 140px;
+}
+
+.page-item .active {
+  background-color: #1C6DBF;
+}
+
+.viewmodal_c {
+  max-width: 2500px;
+  width: 100%;
+}
+
+.vs-modalbody_c {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.title-viewsurvey_c,
+.instruction-viewsurvey_c,
+.likertlegend-viewsurvey_c {
+  text-align: center;
+}
+
+.likert-row-viewsurvey_c {
+  justify-content: center;  
+  display: flex;
+  gap: 36px;
+  margin-top: 8px;
+}
+
+.survey-viewmodal-content {
+  border-radius: 10px;
+  border: 1px solid #dbeafe;
+  padding: 32px 24px;
+  background: #fff;
+  max-width: 900px;
+  margin: auto;
+}
+
+.title-viewsurvey_c {
+  color: #0E58A3;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.instruction-viewsurvey_c {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.likertlegend-viewsurvey_c {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  gap: 10px;
+  font-size: 0.92rem;
+  flex-wrap: wrap;
+}
+
+.likertcircle-viewsurvey_c {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 2px solid #d1d5db;
+}
+
+.legend-strongly-disagree-viewsurvey_c { background: #283747; }
+.legend-disagree-viewsurvey_c { background: #707b7c; }
+.legend-neutral-viewsurvey_c { background: #aab7b8; border: 2px solid #d1d5db; }
+.legend-agree-viewsurvey_c { background: #707b7c; }
+.legend-strongly-agree-viewsurvey_c { background: #283747; border: 2px solid #dbeafe; }
+
+.viewsurvey-questions_c {
+  margin-top: 12px;
+  margin-bottom: 28px;
+}
+
+.likert-row-viewsurvey_c label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.likert-row-viewsurvey_c input[type="radio"] {
+  opacity: 0;
+  position: absolute;
+}
+
+.vscustom-circle_c {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  background: #fff;
+}
+
+input[type="radio"]:checked + .vscustom-circle_c {
+  background-color: #283747; 
+}
+
+.likert-row-viewsurvey_c span {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  background: #fff;
+  transition: background 0.2s, border 0.2s;
+}
+
+input.vs_custom-radio.sd:checked + .vscustom-circle_c {
+  background-color: #283747;
+}
+
+input.vs_custom-radio.d:checked + .vscustom-circle_c {
+  background-color: #707b7c;
+}
+
+input.vs_custom-radio.n:checked + .vscustom-circle_c {
+  background-color: #aab7b8;
+}
+
+input.vs_custom-radio.a:checked + .vscustom-circle_c {
+  background-color: #707b7c;
+}
+
+input.vs_custom-radio.sa:checked + .vscustom-circle_c {
+  background-color: #283747;
+}
+.viewsurvey-close-btn_c {
+  background: #0E58A3;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 48px;
+  box-shadow: 0 2px 8px #dbeafe;
+  margin-top: 16px;
+  transition: background 0.2s;  
+  display: block;
+  margin: 16px auto;
+  text-align: center;
+}
+
+.viewsurvey-close-btn_c:hover {
+  background: #1C6DBF;
+  color: white;
+}
+
+.likertlegend-viewsurvey_c > div {
+  flex: 1;
+}
+
+/* End of Custom styles for counselor pubmats */
