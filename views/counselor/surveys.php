@@ -40,13 +40,14 @@
 
     <!-- Student Surveys Table Section -->
 <div class="container mt-4">
+<div class="table-pagination-wrapper">
   <div class="table-responsive table-surveys_c">
     <table class="table align-middle mb-0 table-hover">
       <thead class="table-light thead-surveys_c">
         <tr>
           <th class="sticky-top bg-secondary-subtle text-center">#</th>
           <th class="sticky-top bg-secondary-subtle">Survey Title</th>
-          <th class="sticky-top bg-secondary-subtle">Date of Release</th>
+          <th class="sticky-top bg-secondary-subtle">Date Submitted</th>
           <th class="sticky-top bg-secondary-subtle text-center">Action</th>
         </tr>
       </thead>
@@ -64,7 +65,27 @@
       </tbody>
     </table>
   </div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-end mt-3">
+      <nav aria-label="Page navigation">
+        <ul class="pagination mb-0">
+          <li class="page-item">
+            <a class="page-link pagination-surveys_c text-white" href="#">Previous</a>
+          </li>
+          <li class="page-item active">
+            <a class="page-link pagination-surveys_c bg-white border text-black" href="#">1</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link pagination-surveys_c text-white" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+  </div>
 </div>
+
 
 <!-- View Modal -->
 <div class="modal fade" id="surveyModal" tabindex="-1" role="dialog" aria-labelledby="surveyModalLabel" aria-hidden="true">
@@ -244,20 +265,6 @@
   </div>
 </div>
 
-<!-- Pagination -->
-<nav aria-label="Page navigation" class="d-flex justify-content-end mt-4 custom-margin-right align-items-center">
-  <ul class="pagination mb-0">
-    <li class="page-item">
-      <a class="page-link pagination-surveys_c text-white" href="#">Previous</a>
-    </li>
-    <li class="page-item active">
-      <a class="page-link pagination-surveys_c bg-white border text-black" href="#">1</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link pagination-surveys_c text-white" href="#">Next</a>
-    </li>
-  </ul>
-</nav>
 
     </main>
 
