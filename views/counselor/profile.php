@@ -10,25 +10,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../assets/css/global.css">
-    <link rel="stylesheet" href="../../assets/css/service-portal.css">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: auto !important;
-            background-color: white;
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
-        }
-    </style>
+    <link rel="stylesheet" href="../../assets/css/counselor.css">
 </head>
 <body>
-    <?php
-        include(__DIR__ . '/../components/service-portal/navbar.php');
+    <?php 
+        include(__DIR__ . '/../components/counselor/sidebar.php');
     ?>
     <main>
-  <div class="container mt-4 d-flex flex-column align-items-center">
+  <div class="container  d-flex flex-column align-items-center">
     <h2 class="text-primary-emphasis text-center pt-5 mb-3 counselor-profile-header"><b>COUNSELOR'S PROFILE</b></h2>
     <div class="text-center mb-3">
       <img src="../../static/profile1.png" alt="Profile Icon" width="150" height="150">
