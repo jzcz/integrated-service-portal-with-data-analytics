@@ -34,7 +34,7 @@
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-file-earmark-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="../counselor/">Good Moral Certificate Requests</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/good-moral-cert-req.php">Good Moral Certificate Requests</a>
                     </li>
                     <li class="my-1"><hr /></li>
                     <li class="fw-bold nav-link-title">Account</li>
