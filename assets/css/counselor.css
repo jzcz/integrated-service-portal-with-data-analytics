@@ -617,3 +617,134 @@ input.vs_custom-radio.sa:checked + .vscustom-circle_c {
 }
 
 /* End of Custom styles for counselor pubmats */
+
+/* Start of Custom styles for counselor assessments */
+
+#viewQuestionsContainer .row {
+  align-items: flex-start;
+}
+
+#viewQuestionsContainer .form-check {
+  margin-bottom: 8px; 
+}
+
+.modal-header_ac {
+  background-color: #0E58A3;
+  color: #fff;
+  border-bottom: none;
+}
+
+.modal-header_ac.btn-close-white {
+  filter: invert(1);
+}
+
+.modal-body_ac{
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+.modal-body_ac.bg-light {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+.descrip_ac {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+#viewQuestionsContainer .row {
+  margin-bottom: 1.5rem;
+}
+
+#viewQuestionsContainer .col-md-6 {
+  padding-right: 1rem;
+}
+
+#viewQuestionsContainer .col-md-4 {
+  padding-left: 1rem;
+}
+
+#viewQuestionsContainer .form-check {
+  margin-bottom: 0.75rem;
+}
+
+.modal-footer.bg-light {
+  background-color: #f1f1f1;
+  border-top: none;
+}
+
+.title_ac {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.header_ac {
+  background-color: #0E58A3;
+}
+
+.header_ac {
+  background-color: #0E58A3;
+  color: #fff;
+  border-bottom: none;
+}
+
+.header_ac .btn-close-white {
+  filter: invert(1); 
+}
+
+.body_ac.bg-light {
+  background-color: #f8f9fa; 
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+.viewsurvey-questions_c {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  position: relative;
+}
+
+.viewsurvey-questions_c .form-label {
+  font-weight: bold;
+}
+
+.viewsurvey-questions_c .btn-danger {
+  background-color: #dc3545;
+  border: none;
+}
+
+.viewsurvey-questions_c .btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btncolor_ac {
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+.btncolor_ac:hover {
+  background-color: #0E58A3;
+  color: #fff;
+}
+
+.footer_ac.bg-light {
+  background-color: #f1f1f1;
+  border-top: none;
+}
+
+.newmodal_ac {
+  text-align: center;
+  width: 100%;
+}
+
+.archive_ac {
+  justify-content: center;
+}
+
+/* End of Custom styles for counselor assessments */
