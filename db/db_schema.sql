@@ -30,6 +30,7 @@ CREATE TABLE students (
     student_no CHAR(9) NOT NULL UNIQUE,
     program_id INT,
     current_year_level ENUM('1ST', '2ND', '3RD', '4TH'),
+    campus VARCHAR(150),
     gender ENUM('Male', 'Female'),
     birthdate DATE NOT NULL,
     img_url VARCHAR(250),
@@ -114,6 +115,8 @@ CREATE TABLE appointments (
   appt_start_time TIME,
   appt_end_time TIME,
   appt_req_type ENUM('Online', 'Walk-in'),
+  cancellation_reason TEXT,
+  decline_reason TEXT,
   agreedToTermsAndConditions BOOLEAN NOT NULL,
   agreedToDataPrivacyPolicy BOOLEAN NOT NULL,
   agreedToLimitations BOOLEAN NOT NULL,
@@ -220,6 +223,7 @@ CREATE TABLE assessments (
 CREATE TABLE assessment_questions (
   assessment_question_id INT PRIMARY KEY AUTO_INCREMENT,
   assessment_id INT NOT NULL,
+  question_title TEXT,
   question_text TEXT NOT NULL,
   FOREIGN KEY (assessment_id) REFERENCES assessments(assessment_id) ON DELETE CASCADE
 );
