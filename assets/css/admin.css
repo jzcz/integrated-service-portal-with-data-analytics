@@ -1,0 +1,60 @@
+
+:root {
+    --primary-color: #08437F;
+    --sidebar-width: 330px;
+}
+  
+/* DO NOT ADD MORE STYLES FOR THE MAIN ELEMENT */
+main {
+    margin-left: var(--sidebar-width);
+    width: (100% - var(--sidebar-width));
+}
+
+/* Start Custom styles for sidebar for counselor dashboard */
+
+#sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--primary-color);
+  color:rgb(223, 223, 223);
+  position: fixed;
+  top: var(--navbar-height);
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+li hr {
+  height: 3px;
+  background-color: white;
+}
+
+.nav-link-title {
+  color: white;
+  font-size: 18px;
+}
+
+li.sidebar-nav-item {
+  font-size: 14px;
+  padding: 0 6px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+li.sidebar-nav-item:hover {
+  background-color: #4e79a4;
+}
+
+.sidebar-header p {
+  font-size: 18px;
+  color: white;
+}
+
+.logout-btn {
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* End Custom styles for sidebar for counselor dashboard */
