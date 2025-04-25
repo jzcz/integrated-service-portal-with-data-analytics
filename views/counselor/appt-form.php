@@ -140,12 +140,12 @@
 
   <div class="col">
     <label for="startTime" class="form-label fw-bold">Start Time</label>
-    <input type="text" id="startTime" name="startTime" class="form-control" value="9:00 AM" />
+    <input type="time" id="startTime" name="startTime" class="form-control" value="9:00 AM" />
   </div>
 
   <div class="col">
     <label for="endTime" class="form-label fw-bold">End Time</label>
-    <input type="text" id="endTime" name="endTime" class="form-control" value="4:00 PM" />
+    <input type="time" id="endTime" name="endTime" class="form-control" value="4:00 PM" />
   </div>
 
   <div class="col">
