@@ -152,6 +152,7 @@ CREATE TABLE publication_materials (
   file_title VARCHAR(250) NOT NULL,
   file_desc TEXT,
   file_url VARCHAR(250) NOT NULL,
+  cover_img_url VARCHAR(250),
   type ENUM('Module', 'Infographics') NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
