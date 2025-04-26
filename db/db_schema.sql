@@ -142,7 +142,7 @@ CREATE TABLE good_moral_cert_reqs (
   pickup_date DATE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  updated_by INT NOT NULL,
+  updated_by INT,
   FOREIGN KEY (program_id) REFERENCES programs(program_id),
   FOREIGN KEY (updated_by) REFERENCES counselors(counselor_id)
 );
