@@ -139,6 +139,7 @@ CREATE TABLE good_moral_cert_reqs (
   proof_img_url VARCHAR(100) NOT NULL,
   decline_reason TEXT,
   additional_req_des TEXT,
+  pickup_date DATE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   updated_by INT NOT NULL,
