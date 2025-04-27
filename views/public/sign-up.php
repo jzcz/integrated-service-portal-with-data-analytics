@@ -160,6 +160,10 @@
   color: rgb(43, 96, 164);
 }
 
+.student-login-link {
+    color: rgb(56, 114, 190)
+}
+
 /** End of Custom Styles for Sign-Up Page */
 
     </style>
@@ -199,7 +203,7 @@
                 <form method="POST" action="" id="signUpForm" class="d-flex flex-column gap-4 container-fluid px-3" >
                     <div>
                         <span class="form-text fw-bold">Sign Up Form</span>
-                        <div class="form-text">Please fill out the form with your <span class="fw-bold">necessary</span> details</div>
+                        <div class="form-text">Please fill out the form with your <span class="fw-bold">necessary</span> details. Have an account already? <a href="../service-portal/login.php" class="fst-italic student-login-link">Login</a></div>
                     </div>
                     <div class="sliding-form">
                         <div class="form-step" id="step1">

@@ -1,4 +1,14 @@
 <?php 
+    session_start();
+
+    include(__DIR__ . "/../../config/utils.php");
+
+    // check session first exists first
+    if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+        header("location: ../public/counselor-admin-login-page.php");
+        exit();
+    }
+
     // appointment request type and brief information about the concern
     $statuses = ["Pending", "Upcoming", "Declined", "Cancelled", "Completed"];
     $concerns = ["Academic", "Career", "Personal"];

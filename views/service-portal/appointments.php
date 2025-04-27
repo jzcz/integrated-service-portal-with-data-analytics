@@ -1,3 +1,17 @@
+<?php 
+    session_start();
+
+    require(__DIR__ . "/../../queries/students.php");
+    include(__DIR__ . "/../../config/utils.php");
+    
+    // check session first exists first
+    if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+      header("location: ../service-portal/login.php");
+      exit();
+   }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>

@@ -1,7 +1,10 @@
 <?php
+  session_start();
+
   $db_conn = require(__DIR__ . "/../../db/db_conn.php");
 
   require(__DIR__ . "/../../queries/students.php");
+  require(__DIR__ . "/../../queries/accounts.php");
   include(__DIR__ . "/../../config/utils.php");
 
   $err = "";
@@ -19,17 +22,24 @@
     $email = sanitizeData($db_conn, $_POST['email']);
     $password = sanitizeData($db_conn, $_POST['password']);
 
-    $student = getStudentByEmail($db_conn, $email);
+    $user = getAccountByEmail($db_conn, $email, 'Student');
     
-    if(empty($student)) {
+    if(empty($user)) {
       header("location: " . $_SERVER["PHP_SELF"] . "?err=Account does not exist! Please sign up instead.");
       exit();
     }
 
-    if(!password_verify($password, $student['password'])) {
+    if(!password_verify($password, $user['password'])) {
       header("location: " . $_SERVER["PHP_SELF"] . "?err=Invalid email or password! Please enter your correct credentials.");
       exit();
     } 
+
+    // get student profile if passed all authentication
+    $student = getStudentByUserId($db_conn, $user['user_id']);
+
+    $_SESSION['studentId'] = $student['student_id'];
+    $_SESSION['userId'] = $user['user_id'];
+    $_SESSION['userRole'] = 'Student';
 
     // redirect to announcements page if passed authentication
     header('location: announcements.php');

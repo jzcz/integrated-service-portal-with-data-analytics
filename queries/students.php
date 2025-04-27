@@ -16,10 +16,20 @@
         return $result->fetch_assoc();
     }
 
-    function getStudentByEmail($db_conn, $email) {
-        $qry = "SELECT * FROM user WHERE email = ? AND role = 'Student';";
+    function getStudentByUserId($db_conn, $userId) {
+        $qry = "SELECT * FROM students WHERE user_id = ?;";
         $stmt = $db_conn->prepare($qry);
-        $stmt->bind_param("s", $email);
+        $stmt->bind_param("i", $userId);
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
+    function getStudentByStudId($db_conn, $studId) {
+        $qry = "SELECT * FROM students WHERE student_id = ?;";
+        $stmt = $db_conn->prepare($qry);
+        $stmt->bind_param("i", $studId);
 
         $stmt->execute();
         $result = $stmt->get_result();

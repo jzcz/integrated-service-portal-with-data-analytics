@@ -1,5 +1,15 @@
 <?php
 
+session_start();
+
+include(__DIR__ . "/../../config/utils.php");
+
+// check session first exists first
+if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+    header("location: ../public/counselor-admin-login-page.php");
+    exit();
+}
+
 // status, studentNo, and name
 $statuses = ["Pending", "Approved", "For Pickup", "Declined", "Cancelled", "Completed"];
 $studentNos = ["20-2150", "20-1800", "20-1688", "20-2337", "20-2100", "20-2002", "21-2307", "21-2248", "21-1689", "21-1999", "21-2009", "21-1560"];
