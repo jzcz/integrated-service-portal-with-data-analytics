@@ -66,6 +66,14 @@ $reasons = [
         include(__DIR__ . '/../components/service-portal/navbar.php');
     ?>
   <main>
+  <div class="form-header-container">
+    <h1 class="p-5"> Good Moral Certificate
+        <br>Request Form </h1>
+</div>
+<div class="request-form-text-container">
+    <h5 class="text-black text-left p-4 pb-1"><b>Request Form</b></h5>
+    <p class="text-black text-left p-5 pt-1 pb-3">Please fill out the form with your information</p>
+</div>
   <?php
     if (isset($_GET['success'])) {
         echo '<div class="alert alert-success">' . htmlspecialchars($_GET['success']) . '</div>';
