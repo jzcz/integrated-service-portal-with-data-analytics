@@ -10,11 +10,11 @@ include(__DIR__ . "/../../config/utils.php");
 $db_conn = include(__DIR__ . "/../../db/db_conn.php");
 $conn = $db_conn; // Now $conn is safe to use
 
-  // // Check if student is logged in
-  // if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
-  //     header("location: ../service-portal/login.php");
-  //     exit();
-  // }
+  // Check if student is logged in
+  if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+      header("location: ../service-portal/login.php");
+      exit();
+  }
 
   $studentId = $_SESSION['studentId'];
 
