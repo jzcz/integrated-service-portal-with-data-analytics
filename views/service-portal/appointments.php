@@ -1,16 +1,63 @@
-<?php 
-    session_start();
+  <?php 
+ // Directly start session
+session_start();
 
-    require(__DIR__ . "/../../queries/students.php");
-    include(__DIR__ . "/../../config/utils.php");
-    
-    // check session first exists first
-    if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
-      header("location: ../service-portal/login.php");
-      exit();
-   }
+// Include necessary files
+require(__DIR__ . "/../../queries/students.php");
+include(__DIR__ . "/../../config/utils.php");
 
+// Include DB connection
+$db_conn = include(__DIR__ . "/../../db/db_conn.php");
+$conn = $db_conn; // Now $conn is safe to use
+
+  // // Check if student is logged in
+  // if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+  //     header("location: ../service-portal/login.php");
+  //     exit();
+  // }
+
+  $studentId = $_SESSION['studentId'];
+
+// Default values
+$student = [
+    'first_name' => '',
+    'last_name' => '',
+    'middle_name' => '',
+    'suffix' => '',
+    'student_no' => '',
+    'program_id' => '',
+    'current_year_level' => '',
+    'gender' => '',
+    'personal_contact_no' => '',
+    'student_email' => '',
+    'guardian_name' => '',
+    'guardian_contact_no' => '',
+    'course' => '',
+    'year' => '',
+    'section' => '',
+    'qcu_email' => ''
+];
+
+// Fetch student data
+$query = "SELECT first_name, last_name, middle_name, suffix, student_no, program_id, current_year_level, gender, personal_contact_no, student_email, guardian_name, guardian_contact_no 
+          FROM appt_attendee 
+          WHERE student_id = ? LIMIT 1";
+
+if ($stmt = $conn->prepare($query)) {
+    $stmt->bind_param("i", $studentId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $data = $result->fetch_assoc();
+        $student = array_merge($student, $data);
+    }
+    $stmt->close();
+}
 ?>
+
+   
+   
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -69,41 +116,41 @@
             <div class="appoint-input-group">
                 <label for="lastname">Full Name (Last Name, First Name, Middle Initial)</label>
                 <div class="appoint-seperate-inputs">
-                    <input type="text" id="lastname" name="lastname" placeholder="Last Name">
-                    <input type="text" id="firstname" name="firstname" placeholder="First Name">
-                    <input type="text" id="mi" name="middleinitial" placeholder="Middle Name">
+                    <input type="text" id="lastname" name="lastname" value="<?= htmlspecialchars($student['last_name']) ?>" placeholder="Last Name">
+                    <input type="text" id="firstname" name="firstname" value="<?= htmlspecialchars($student['first_name']) ?>" placeholder="First Name">
+                    <input type="text" id="mi" name="middleinitial" value="<?= htmlspecialchars($student['middle_name']) ?>" placeholder="Middle Name">
             </div>
 
   
                 <div class="appoint-input-group">
                 <label for="course/yr/sec">Course/Year/Section</label>
                 <div class="appoint-seperate-inputs">
-                    <input type="text" id="course" name="course" placeholder="Course">
-                    <input type="text" id="year" name="year" placeholder="Year">
-                    <input type="text" id="section" name="section" placeholder="Section">
+                    <input type="text" id="course" name="course"value="<?= htmlspecialchars($student['course']) ?>" placeholder="Course">
+                    <input type="text" id="year" name="year" value="<?= htmlspecialchars($student['year']) ?>" placeholder="Year">
+                    <input type="text" id="section" name="section" value="<?= htmlspecialchars($student['section']) ?>" placeholder="Section">
             </div>
 
                 <div class="appoint-input-group">
                     <label for="personal-contact-no">Personal Contact Number</label>
-                    <input type="text" id="personal-contact-no" name="personal-contact-no" placeholder="+63 000 000 0000">
+                    <input type="text" id="personal-contact-no" name="personal-contact-no" value="<?= htmlspecialchars($student['personal_contact_no']) ?>" placeholder="+63 000 000 0000">
                 </div>
         
 
             <div class="appoint-input-group">
                 <label for="qcu-email">QCU Email Address</label>
-                <input type="text" id="qcu-email" name="qcu-email" placeholder="example@example.com">
+                <input type="text" id="qcu-email" name="qcu-email" value="<?= htmlspecialchars($student['qcu_email']) ?>" placeholder="example@example.com">
             </div>
             <div class="appoint-row-group">
                 <div class="appoint-input-group">
                     <label for="guardian's-name">Guardian's Name</label>
                     <div class="multi-input-group">
-                    <input type="text" id="guardian's-name" name="guardian's-name" placeholder="Guardian's Full Name">
+                    <input type="text" id="guardian's-name" name="guardian's-name" value="<?= htmlspecialchars($student['guardian_name']) ?>" placeholder="Guardian's Full Name">
                     </div>
                 </div>
 
                 <div class="appoint-input-group">
                     <label for="guardian-contact-no">Guardian's Contact Number</label>
-                    <input type="text" id="guardian-contact-no" name="guardian-contact-no" placeholder="+63 000 000 0000">
+                    <input type="text" id="guardian-contact-no" name="guardian-contact-no" value="<?= htmlspecialchars($student['guardian_contact_no']) ?>" placeholder="+63 000 000 0000">
                 </div>
             </div>
 
