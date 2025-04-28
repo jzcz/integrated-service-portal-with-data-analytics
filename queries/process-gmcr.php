@@ -5,7 +5,6 @@ session_start();
 require_once(__DIR__ . "/../config/utils.php");
 $db_conn = require(__DIR__ . "/../db/db_conn.php");
 require_once(__DIR__ . "/students.php");
-require_once(__DIR__ . "/../db/media_store.php"); // Include media_store.php
 
 // Check if the student is logged in
 if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
@@ -27,57 +26,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lastSemester = sanitizeData($db_conn, $_POST['lastSemester'] ?? '');
     $reason = sanitizeData($db_conn, $_POST['reason'] ?? '');
     $specifyReason = sanitizeData($db_conn, $_POST['specifyReason'] ?? '');
+    $contactNo = sanitizeData($db_conn, $_POST['contact_no'] ?? '');
+    $email = sanitizeData($db_conn, $_POST['email'] ?? '');
 
-    // Handle the uploaded image using Cloudinary through media_store.php
-    $proofOfImageFilename = null;
-    $uploadError = null;
-    if (isset($_FILES['proofOfImage']) && $_FILES['proofOfImage']['error'] === UPLOAD_ERR_OK) {
-        $fileTmpName = $_FILES['proofOfImage']['tmp_name'];
 
-        try {
-            $uploadResult = getMediaStore()->uploadImage($fileTmpName, 'gmc_proofs');
-            if (isset($uploadResult['secure_url'])) {
-                $proofOfImageFilename = $uploadResult['secure_url'];
-            } else {
-                $uploadError = "Failed to upload image to Media Store.";
-                error_log("Media Store upload error for user ID: " . $_SESSION['userId'] . ", result: " . print_r($uploadResult, true));
-                header("Location: " . $_SERVER["PHP_SELF"] . "?upload_error=" . urlencode($uploadError));
-                exit();
-            }
-        } catch (Exception $e) {
-            $uploadError = "Error interacting with Media Store: " . $e->getMessage();
-            error_log("Media Store interaction error for user ID: " . $_SESSION['userId'] . ", error: " . $e->getMessage());
-            header("Location: " . $_SERVER["PHP_SELF"] . "?upload_error=" . urlencode($uploadError));
+    if (isset($_FILES['proofOfImage'])) {
+        if ($_FILES['proofOfImage']['error'] === UPLOAD_ERR_NO_FILE) {
+            // No file was uploaded, this is an expected case
+        } else {
+            // An error occurred during upload (even if you're not saving it)
+            error_log("Image upload error (not saved): " . $_FILES['proofOfImage']['error']);
+            $response = ['status' => 'error', 'message' => 'Error with image upload. Please try again.'];
+            header('Content-Type: application/json');
+            echo json_encode($response);
             exit();
         }
-    } elseif (!isset($_FILES['proofOfImage']) || $_FILES['proofOfImage']['error'] === UPLOAD_ERR_NO_FILE) {
-        $uploadError = "Please upload proof of your student status.";
-        header("Location: " . $_SERVER["PHP_SELF"] . "?error_noimage=" . urlencode($uploadError));
-        exit();
-    } elseif (isset($_FILES['proofOfImage'])) {
-        $uploadError = "Error uploading image. Code: " . $_FILES['proofOfImage']['error'];
-        header("Location: " . $_SERVER["PHP_SELF"] . "?error_uploading=" . urlencode($uploadError));
-        exit();
     }
 
-    // Call the submitGmcRequest function from students.php
-    if ($uploadError === null) {
-        if (submitGmcRequest(
-            $db_conn, $firstName, $middleName, $lastName, $suffix,
-            $studentNo, $programId, $startSchoolYear, $endSchoolYear,
-            $lastSemester, $reason, $specifyReason, $proofOfImageFilename
-        )) {
-            $success = "Your Good Moral Certificate request has been submitted successfully.";
-            header("Location: " . $_SERVER["PHP_SELF"] . "?success=" . urlencode($success));
-            exit();
-        } else {
-            $error = "There was an error submitting your request. Please try again.";
-            header("Location: " . $_SERVER["PHP_SELF"] . "?error=" . urlencode($error));
-            exit();
-        }
+    // Call the submitGmcRequest function from students.php with NULL for proofImgUrl
+    if (submitGmcRequest(
+        $db_conn, $firstName, $middleName, $lastName, $suffix,
+        $studentNo, $programId, $startSchoolYear, $endSchoolYear,
+        $lastSemester, $reason, $specifyReason, NULL, $contactNo, $email
+    )) {
+        $response = ['status' => 'success', 'message' => 'Your Good Moral Certificate request has been submitted successfully.'];
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit();
     } else {
-        // Redirect back to the form with the upload error
-        header("Location: " . $_SERVER["PHP_SELF"] . "?upload_error=" . urlencode($uploadError));
+        $response = ['status' => 'error', 'message' => 'There was an error submitting your request. Please try again.'];
+        header('Content-Type: application/json');
+        echo json_encode($response);
         exit();
     }
 

@@ -103,17 +103,17 @@
     }
 
 
-    function submitGmcRequest($db_conn, $firstName, $middleName, $lastName, $suffix, $studentNo, $programId, $startSchoolYear, $endSchoolYear, $semester, $reasonDesc, $specifyReason, $proofImgUrl) {
+    function submitGmcRequest($db_conn, $firstName, $middleName, $lastName, $suffix, $studentNo, $programId, $startSchoolYear, $endSchoolYear, $semester, $reasonDesc, $specifyReason, $proofImgUrl, $contactNo, $email) {
         $query = "INSERT INTO good_moral_cert_reqs (
-                    first_name, middle_name, last_name, suffix,
-                    student_no, program_id, start_school_year, last_school_year,
-                    semester, reason_desc, additional_req_des, proof_img_url, created_at
-                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                        first_name, middle_name, last_name, suffix,
+                        student_no, program_id, start_school_year, last_school_year,
+                        semester, reason_desc, additional_req_des, proof_img_url, contact_no, email
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db_conn->prepare($query);
-        $stmt->bind_param("ssssssssssss",
+        $stmt->bind_param("ssssssssssssss", // Now 14 's'
                             $firstName, $middleName, $lastName, $suffix,
                             $studentNo, $programId, $startSchoolYear, $endSchoolYear,
-                            $semester, $reasonDesc, $specifyReason, $proofImgUrl);
+                            $semester, $reasonDesc, $specifyReason, $proofImgUrl, $contactNo, $email);
         return $stmt->execute();
     }
 ?>

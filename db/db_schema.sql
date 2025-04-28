@@ -130,6 +130,8 @@ CREATE TABLE good_moral_cert_reqs (
   middle_name VARCHAR(100),
   suffix ENUM('Sr.', 'Jr.', 'III', 'IV'),
   student_no CHAR(9) NOT NULL,
+  email VARCHAR(255),
+  contact_no VARCHAR(255),
   program_id INT NOT NULL,
   start_school_year VARCHAR(12) NOT NULL,
   last_school_year VARCHAR(12) NOT NULL,
