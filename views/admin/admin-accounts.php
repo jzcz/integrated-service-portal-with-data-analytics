@@ -1,25 +1,52 @@
 <?php 
-    session_start();
+  session_start();
 
-    include(__DIR__ . "/../../config/utils.php");
-    
-    // check session first exists first
-    if (!isset($_SESSION['adminId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Admin') {
-      header("location: ../public/counselor-admin-login-page.php");
-      exit();
-   }
+  include(__DIR__ . "/../../config/utils.php");
+  $db_conn = require __DIR__ . "/../../db/db_conn.php";
 
+  if (!isset($_SESSION['adminId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Admin') {
+    header("location: ../public/counselor-admin-login-page.php");
+    exit();
+  }
+
+  if ($db_conn->connect_error) {
+      die("Connection failed: " . $db_conn->connect_error);
+  }
+
+  if (isset($_POST['toggle'])) {
+    $user_id = $_POST['user_id'];
+
+    // Fetch current status
+    $stmt = $db_conn->prepare("SELECT status FROM user WHERE user_id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if ($row) {
+        $currentStatus = $row['status'];
+        $newStatus = ($currentStatus == 'Active') ? 'Disabled' : 'Active';
+
+        // Update status
+        $updateStmt = $db_conn->prepare("UPDATE user SET status = ? WHERE user_id = ?");
+        $updateStmt->bind_param("si", $newStatus, $user_id);
+        if ($updateStmt->execute()) {
+            header("Location: {$_SERVER['HTTP_REFERER']}");
+            exit();
+        } else {
+            echo "Error updating status: " . $db_conn->error;
+        }
+    }
+  }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Rubik&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../../assets/css/global.css">
   <link rel="stylesheet" href="../../assets/css/admin.css">
@@ -31,15 +58,14 @@
   <h2 class="fw-bold text-center mb-4" style="font-family: 'Rubik', sans-serif; color: #004085;">Admin Accounts</h2>
 
   <div class="d-flex justify-content-between mb-3">
-    <div class="d-flex gap-2">
-      <button type="button" class="btn" style="background-color: #004085; color: white; font-weight: bold;">Add Account</button>
-    </div>
-    <div class="d-flex align-items-end">
-      <input type="text" class="form-control form-control-sm me-2" placeholder="Search account">
-      <button class="btn btn-sm" style="width: 120px; background-color: #004085; color: white;">
+    <button type="button" class="btn" style="background-color: #004085; color: white; font-weight: bold;">Add Account</button>
+
+    <form method="GET" class="d-flex align-items-end">
+      <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search account" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+      <button type="submit" class="btn btn-sm" style="width: 120px; background-color: #004085; color: white;">
         <i class="bi bi-search"></i> Search
       </button>
-    </div>
+    </form>
   </div>
 
   <div class="table-responsive">
@@ -53,49 +79,92 @@
         </tr>
       </thead>
       <tbody>
-
-<!-- Table Rows -->
 <?php
-$accounts = [
-  ["Cruz, Jazelle L.", "cruz.jazelle@gmail.com", "2025-01-01 14:45"],
-  ["Narsico, Rhealyn A.", "narsico.rhealyn@gmail.com", "2025-01-02 01:45"],
-  ["Domanico, Chassy Dhayne", "domanico.chassy@gmail.com", "2025-01-03 02:45"],
-  ["Lagmay, Vaughn", "lagmay.vaughn@gmail.com", "2025-01-31 03:45"],
-  ["Lopez, Diana Paula", "lopez.diana@gmail.com", "2025-01-11 10:45"],
-  ["Del Mundo, Joshua", "delmundo.joshua@gmail.com", "2025-01-01 14:45"],
-  ["Cresencio, Princess Jasmine S.", "cresencio.princess@gmail.com", "2025-01-01 14:45"],
-  ["Labanan, Llysa A.", "labanan.llysa@gmail.com", "2025-01-01 14:45"],
-  ["Balili, Erica Mea B.", "balili.erica@gmail.com", "2025-01-01 14:45"],
-  ["Santiago, Juan Z.", "santiago.juan@gmail.com", "2025-01-01 14:45"]
-];
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 8;
+$offset = ($page - 1) * $limit;
+$search = isset($_GET['search']) ? $_GET['search'] : '';
 
-foreach ($accounts as $account) {
-  echo "<tr>
-          <td>{$account[0]}</td>
-          <td>{$account[1]}</td>
-          <td>{$account[2]}</td>
-          <td>
-            <div class='btn-group btn-group-sm' role='group' style='gap: 5px;'>
-              <a href='#' class='btn' style='background-color: #3879b1; color: white; border-radius: 8px;'
-                data-bs-toggle='modal' data-bs-target='#viewAccountModal'
-                data-fullname='{$account[0]}'
-                data-email='{$account[1]}'
-                data-datecreated='{$account[2]}'>
-                View
-              </a>
-              <a href='#' class='btn' style='background-color: #d6534f; color: white; border-radius: 8px;'>Disable</a>
-            </div>
-          </td>
-        </tr>";
+$whereCondition = "u.role = 'Admin'";
+$params = [];
+$types = "";
+
+if (!empty($search)) {
+    $whereCondition .= " AND (CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) LIKE ? OR u.email LIKE ?)";
+    $searchParam = "%$search%";
+    $params = [$searchParam, $searchParam];
+    $types = "ss";
+}
+
+$totalQuery = "SELECT COUNT(*) as total FROM admin s JOIN user u ON s.user_id = u.user_id WHERE $whereCondition";
+if ($stmt = $db_conn->prepare($totalQuery)) {
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $totalRow = $result->fetch_assoc();
+    $totalAccounts = $totalRow['total'];
+    $stmt->close();
+} else {
+    $totalAccounts = 0;
+}
+
+$totalPages = ceil($totalAccounts / $limit);
+
+$sql = "SELECT s.admin_id, CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name, u.email, u.created_at, u.status, u.user_id FROM admin s JOIN user u ON s.user_id = u.user_id WHERE $whereCondition LIMIT $limit OFFSET $offset";
+
+if ($stmt = $db_conn->prepare($sql)) {
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($row = $result->fetch_assoc()) {
+        $status = $row['status'];
+        $buttonText = $status == 'Active' ? 'Disable' : 'Activate';
+        $buttonColor = $status == 'Active' ? '#d6534f' : '#198754';
+
+        echo "<tr>
+                <td>{$row['full_name']}</td>
+                <td>{$row['email']}</td>
+                <td>{$row['created_at']}</td>
+                <td>
+                  <div class='btn-group btn-group-sm' role='group' style='gap: 5px;'>
+                    <a href='#' class='btn' style='background-color: #3879b1; color: white; border-radius: 8px;' data-bs-toggle='modal' data-bs-target='#viewAccountModal' data-fullname='{$row['full_name']}' data-studno='{$row['admin_id']}' data-email='{$row['email']}' data-datecreated='{$row['created_at']}'>View</a>
+                    <form method='POST' action='' style='display:inline-block;'>
+                      <input type='hidden' name='user_id' value='{$row['user_id']}'>
+                      <button type='submit' name='toggle' class='btn' style='background-color: {$buttonColor}; color: white; border-radius: 8px;'>
+                        {$buttonText}
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>";
+    }
+    $stmt->close();
 }
 ?>
-
       </tbody>
     </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+            <a class="page-link" href="<?= ($page > 1) ? '?page=' . ($page - 1) . (!empty($search) ? '&search=' . urlencode($search) : '') : '#' ?>" style="color: #004085;">&laquo;</a>
+          </li>
+          <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+            <a class="page-link" href="<?= ($page < $totalPages) ? '?page=' . ($page + 1) . (!empty($search) ? '&search=' . urlencode($search) : '') : '#' ?>" style="color: #004085;">&raquo;</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </main>
 
-<!-- Modal -->
+<!-- MODAL -->
 <div class="modal fade" id="viewAccountModal" tabindex="-1" aria-labelledby="viewAccountModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -105,6 +174,8 @@ foreach ($accounts as $account) {
       </div>
       <div class="modal-body">
         <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+        <p><strong>Admin Number:</strong> <span id="modalAdminNumber"></span></p>
+        <p><strong>Program:</strong> Bachelor of Science in Information Technology</p>
         <p><strong>Email:</strong> <span id="modalEmail"></span></p>
         <p><strong>Date Created:</strong> <span id="modalDateCreated"></span></p>
       </div>
@@ -115,22 +186,17 @@ foreach ($accounts as $account) {
   </div>
 </div>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<?php $db_conn->close(); ?>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 const viewAccountModal = document.getElementById('viewAccountModal');
-
 viewAccountModal.addEventListener('show.bs.modal', event => {
   const button = event.relatedTarget;
-
-  const fullName = button.getAttribute('data-fullname');
-  const email = button.getAttribute('data-email');
-  const dateCreated = button.getAttribute('data-datecreated');
-
-  document.getElementById('modalFullName').textContent = fullName;
-  document.getElementById('modalEmail').textContent = email;
-  document.getElementById('modalDateCreated').textContent = dateCreated;
+  document.getElementById('modalFullName').textContent = button.getAttribute('data-fullname');
+  document.getElementById('modalAdminNumber').textContent = button.getAttribute('data-studno');
+  document.getElementById('modalEmail').textContent = button.getAttribute('data-email');
+  document.getElementById('modalDateCreated').textContent = button.getAttribute('data-datecreated');
 });
 </script>
 
