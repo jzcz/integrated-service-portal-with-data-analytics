@@ -5,6 +5,7 @@ session_start();
 require_once(__DIR__ . "/../config/utils.php");
 $db_conn = require(__DIR__ . "/../db/db_conn.php");
 require_once(__DIR__ . "/students.php");
+require_once(__DIR__ . "/../db/media_store.php");
 
 // Check if the student is logged in
 if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
@@ -29,25 +30,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contactNo = sanitizeData($db_conn, $_POST['contact_no'] ?? '');
     $email = sanitizeData($db_conn, $_POST['email'] ?? '');
 
+    $proofImgUrl = NULL; // Initialize proofImgUrl
 
-    if (isset($_FILES['proofOfImage'])) {
-        if ($_FILES['proofOfImage']['error'] === UPLOAD_ERR_NO_FILE) {
-            // No file was uploaded, this is an expected case
-        } else {
-            // An error occurred during upload (even if you're not saving it)
-            error_log("Image upload error (not saved): " . $_FILES['proofOfImage']['error']);
-            $response = ['status' => 'error', 'message' => 'Error with image upload. Please try again.'];
+    if (isset($_FILES['proofOfImage']) && $_FILES['proofOfImage']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['proofOfImage']['tmp_name'];
+
+        try {
+            $mediaStore = getMediaStore();
+            $uploadResult = $mediaStore->uploadApi()->upload($file, []); 
+            $proofImgUrl = $uploadResult['secure_url']; 
+        } catch (\Cloudinary\Api\Exception\ApiException $e) {
+            error_log("Cloudinary upload error: " . $e->getMessage());
+            $response = ['status' => 'error', 'message' => 'Error uploading image. Please try again.'];
             header('Content-Type: application/json');
             echo json_encode($response);
             exit();
         }
+    } elseif (isset($_FILES['proofOfImage']) && $_FILES['proofOfImage']['error'] !== UPLOAD_ERR_NO_FILE) {
+        // Handle other upload errors
+        error_log("File upload error: " . $_FILES['proofOfImage']['error']);
+        $response = ['status' => 'error', 'message' => 'Error uploading image. Please try again.'];
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit();
     }
 
-    // Call the submitGmcRequest function from students.php with NULL for proofImgUrl
+    // Call the submitGmcRequest function from students.php with the Cloudinary URL
     if (submitGmcRequest(
         $db_conn, $firstName, $middleName, $lastName, $suffix,
         $studentNo, $programId, $startSchoolYear, $endSchoolYear,
-        $lastSemester, $reason, $specifyReason, NULL, $contactNo, $email
+        $lastSemester, $reason, $specifyReason, $proofImgUrl, $contactNo, $email
     )) {
         $response = ['status' => 'success', 'message' => 'Your Good Moral Certificate request has been submitted successfully.'];
         header('Content-Type: application/json');

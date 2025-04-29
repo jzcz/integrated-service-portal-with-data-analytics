@@ -66,32 +66,32 @@ $reasons = [
         include(__DIR__ . '/../components/service-portal/navbar.php');
     ?>
   <main>
-  <div class="form-header-container">
-    <h1 class="p-5"> Good Moral Certificate
-        <br>Request Form </h1>
-</div>
-<div class="request-form-text-container">
-    <h5 class="text-black text-left p-4 pb-1"><b>Request Form</b></h5>
-    <p class="text-black text-left p-5 pt-1 pb-3">Please fill out the form with your information</p>
-</div>
-  <?php
-    if (isset($_GET['success'])) {
-        echo '<div class="alert alert-success">' . htmlspecialchars($_GET['success']) . '</div>';
-    }
-    if (isset($_GET['error'])) {
-        echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['error']) . '</div>';
-    }
-    if (isset($_GET['err'])) {
-        echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['err']) . '</div>';
-    }
-    if (isset($_GET['error_noimage'])) {
-        echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['error_noimage']) . '</div>';
-    }
-    if (isset($_GET['error_uploading'])) {
-        echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['error_uploading']) . '</div>';
-    }
-    ?>
-  <form id="gmcRequestForm" action="../../queries/process-gmcr.php" method="POST">
+    <div class="form-header-container">
+        <h1 class="p-5"> Good Moral Certificate
+            <br>Request Form </h1>
+    </div>
+    <div class="request-form-text-container">
+        <h5 class="text-black text-left p-4 pb-1"><b>Request Form</b></h5>
+        <p class="text-black text-left p-5 pt-1 pb-3">Please fill out the form with your information</p>
+    </div>
+    <?php
+        if (isset($_GET['success'])) {
+            echo '<div class="alert alert-success">' . htmlspecialchars($_GET['success']) . '</div>';
+        }
+        if (isset($_GET['error'])) {
+            echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['error']) . '</div>';
+        }
+        if (isset($_GET['err'])) {
+            echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['err']) . '</div>';
+        }
+        if (isset($_GET['error_noimage'])) {
+            echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['error_noimage']) . '</div>';
+        }
+        if (isset($_GET['error_uploading'])) {
+            echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['error_uploading']) . '</div>';
+        }
+        ?>
+    <form id="gmcRequestForm" action="../../queries/process-gmcr.php" method="POST">
         <div class="p-5 pt-1">
             <div class="row">
                 <div class="col-md-3 mb-3">
@@ -161,7 +161,7 @@ $reasons = [
 
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label for="startingSchoolYear" class="form-label">Starting School Year</label>
+                    <label for="startSchoolYear" class="form-label">Starting School Year</label>
                     <select name="startSchoolYear" class="required form-select text-muted" id="startSchoolYear" value="" style="width: 100%;">
                         <option selected disabled>Start School Year</option>
                         <?php foreach($schoolYears as $s) { ?>
@@ -170,7 +170,7 @@ $reasons = [
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="lastSchoolYear" class="form-label">Last School Year</label>
+                    <label for="endSchoolYear" class="form-label">Last School Year</label>
                     <select name="endSchoolYear" class="required form-select text-muted" id="endSchoolYear" value="" style="width: 100%;">
                         <option selected disabled>End School Year</option>
                         <?php foreach($schoolYears as $s) { ?>
@@ -179,7 +179,7 @@ $reasons = [
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="lastSemesterAttended" class="form-label">Last Semester Attended</label>
+                    <label for="lastSemester" class="form-label">Last Semester Attended</label>
                     <select name="lastSemester" class="required form-select text-muted" id="lastSemester" value="" style="width: 100%;">
                         <option selected disabled>Last Semester</option>
                         <option value="1st">1st</option>
@@ -189,7 +189,7 @@ $reasons = [
             </div>
 
             <div class="mb-3">
-                <label for="reasonForRequest" class="form-label">Reason for Request</label>
+                <label for="reason" class="form-label">Reason for Request</label>
                 <select name="reason" class="required form-select text-muted" id="reason" value="">
                     <option selected disabled>Select Reason</option>
                     <?php foreach($reasons as $r) { ?>
@@ -241,7 +241,6 @@ $reasons = [
             <p class="text-center mb-0">© 2024 QCU Guidance and Counseling. All rights reserved.</p>
         </div>
     </footer>
-    </main>
 
     <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -261,87 +260,92 @@ $reasons = [
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('gmcRequestForm');
-            const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
-            const modalBody = document.getElementById('modalBody');
-            const responseModalLabel = document.getElementById('responseModalLabel');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('gmcRequestForm');
+        const responseModal = new bootstrap.Modal(document.getElementById('responseModal'));
+        const modalBody = document.getElementById('modalBody');
+        const responseModalLabel = document.getElementById('responseModalLabel');
 
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
 
-                const formData = new FormData(form);
+            const formData = new FormData(form);
 
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    modalBody.textContent = data.message;
-                    if (data.status === 'success') {
-                        responseModalLabel.textContent = 'Success!';
-                        // Optionally, you can change the modal's appearance for success
-                    } else if (data.status === 'error') {
-                        responseModalLabel.textContent = 'Error!';
-                        // Optionally, you can change the modal's appearance for error
-                    }
-                    responseModal.show();
-                    if (data.status === 'success') {
-                        form.reset(); // Optionally clear the form after success
-                        // You might also want to redirect after a short delay if preferred
-                        // setTimeout(() => { window.location.href = 'some_success_page.php'; }, 1500);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error);
-                    modalBody.textContent = 'An unexpected error occurred. Please try again.';
-                    responseModalLabel.textContent = 'Error!';
-                    responseModal.show();
-                });
-            });
-
-            const fileInput = document.getElementById('proofOfImage');
-            const uploadArea = document.querySelector('.image-upload-area');
-            const uploadText = document.querySelector('.upload-text');
-            const uploadedImageName = document.getElementById('uploadedImageName');
-            const uploadIcon = document.querySelector('.upload-icon');
-            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-            const imagePreview = document.getElementById('imagePreview');
-
-            fileInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    const file = this.files[0];
-                    const fileName = file.name;
-
-                    uploadedImageName.textContent = `Selected file: ${fileName}`;
-                    uploadedImageName.style.display = 'block';
-                    uploadText.style.display = 'none';
-                    uploadIcon.style.display = 'none';
-                    uploadArea.style.borderColor = '#28a745';
-
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        imagePreviewContainer.style.display = 'block';
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    uploadedImageName.textContent = '';
-                    uploadedImageName.style.display = 'none';
-                    imagePreview.src = '#';
-                    imagePreviewContainer.style.display = 'none';
-                    uploadText.style.display = 'block';
-                    uploadIcon.style.display = 'block';
-                    uploadArea.style.borderColor = '#ccc';
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
-
-            uploadArea.addEventListener('click', function() {
-                fileInput.click();
+                return response.json();
+            })
+            .then(data => {
+                modalBody.textContent = data.message;
+                if (data.status === 'success') {
+                    responseModalLabel.textContent = 'Success!';
+                    // Optionally, you can change the modal's appearance for success
+                } else if (data.status === 'error') {
+                    responseModalLabel.textContent = 'Error!';
+                    // Optionally, you can change the modal's appearance for error
+                }
+                responseModal.show();
+                if (data.status === 'success') {
+                    form.reset(); // Optionally clear the form after success
+                    // You might also want to redirect after a short delay if preferred
+                    // setTimeout(() => { window.location.href = 'some_success_page.php'; }, 1500);
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting form:', error);
+                modalBody.textContent = 'An unexpected error occurred. Please try again.';
+                responseModalLabel.textContent = 'Error!';
+                responseModal.show();
             });
         });
-    </script>
+
+        const fileInput = document.getElementById('proofOfImage');
+        const uploadArea = document.querySelector('.image-upload-area');
+        const uploadText = document.querySelector('.upload-text');
+        const uploadedImageName = document.getElementById('uploadedImageName');
+        const uploadIcon = document.querySelector('.upload-icon');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const fileName = file.name;
+
+                uploadedImageName.textContent = `Selected file: ${fileName}`;
+                uploadedImageName.style.display = 'block';
+                uploadText.style.display = 'none';
+                uploadIcon.style.display = 'none';
+                uploadArea.style.borderColor = '#28a745';
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreviewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                uploadedImageName.textContent = '';
+                uploadedImageName.style.display = 'none';
+                imagePreview.src = '#';
+                imagePreviewContainer.style.display = 'none';
+                uploadText.style.display = 'block';
+                uploadIcon.style.display = 'block';
+                uploadArea.style.borderColor = '#ccc';
+            }
+        });
+
+        uploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+    });
+</script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

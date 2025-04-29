@@ -95,10 +95,9 @@
 
             return $res->fetch_assoc();
         } catch (Exception $e) {
-            // An exception has been thrown
-            // We must rollback the transaction
+            
             $db_conn->rollback();
-            echo $e->getMessage(); // but the error must be handled anyway
+            echo $e->getMessage(); 
         }
     }
 
@@ -110,7 +109,7 @@
                         semester, reason_desc, additional_req_des, proof_img_url, contact_no, email
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db_conn->prepare($query);
-        $stmt->bind_param("ssssssssssssss", // Now 14 's'
+        $stmt->bind_param("ssssssssssssss",
                             $firstName, $middleName, $lastName, $suffix,
                             $studentNo, $programId, $startSchoolYear, $endSchoolYear,
                             $semester, $reasonDesc, $specifyReason, $proofImgUrl, $contactNo, $email);
