@@ -15,4 +15,10 @@
     define('MEDIA_STORE_API_KEY', $_ENV['MEDIA_STORE_API_KEY']);
     define('MEDIA_STORE_API_SECRET', $_ENV['MEDIA_STORE_API_SECRET']);
     define('MEDIA_STORE_NAME', $_ENV['MEDIA_STORE_NAME']);
+
+    // Define constants for email service
+    define('EMAIL_SERVICE_PASSWORD', $_ENV['EMAIL_SERVICE_PASSWORD']);
+    define('EMAIL_SERVICE_SENDER', $_ENV['EMAIL_SERVICE_SENDER']);
+    define('EMAIL_SERVICE_HOST', $_ENV['EMAIL_SERVICE_HOST']);
+    define('EMAIL_SERVICE_PORT', $_ENV['EMAIL_SERVICE_PORT']);
 ?>

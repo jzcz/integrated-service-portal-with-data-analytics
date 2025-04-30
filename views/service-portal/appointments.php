@@ -8,8 +8,11 @@
     if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
       header("location: ../service-portal/login.php");
       exit();
-   }
+    }
 
+    $db_conn = include(__DIR__ . "/../../db/db_conn.php");
+    $currentStudent = $_SESSION['studentId'];
+    
 ?>
 
 <!DOCTYPE html>
@@ -85,7 +88,7 @@
 
                 <div class="appoint-input-group">
                     <label for="personal-contact-no">Personal Contact Number</label>
-                    <input type="text" id="personal-contact-no" name="personal-contact-no" placeholder="+63 000 000 0000">
+                    <input type="text" value="<?php echo $student['first_name']?>" id="personal-contact-no" name="personal-contact-no" placeholder="+63 000 000 0000">
                 </div>
         
 

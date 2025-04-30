@@ -1,13 +1,111 @@
 <?php 
     session_start();
 
+    $db_conn = include(__DIR__ . "/../../db/db_conn.php");
+
     include(__DIR__ . "/../../config/utils.php");
     
     // check session first exists first
-    if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
-        header("location: ../public/counselor-admin-login-page.php");
-        exit();
-    }
+    // if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+    //     header("location: ../public/counselor-admin-login-page.php");
+    //     exit();
+    // }
+    $currentYear = date('Y');
+    $previousYear = $currentYear - 1;
+
+    $currentMonthNum = date('n');
+
+    $completedAppointmentsThisYearQry = "SELECT COUNT(*) FROM appointments WHERE status = 'Completed' AND YEAR(appt_date) = $currentYear;";
+    $completedAppointmentsLastYearQry = "SELECT COUNT(*) FROM appointments WHERE status = 'Completed' AND YEAR(appt_date) = $previousYear;";
+
+    $totalNumOfcompletedAppsThisYear = $db_conn->query($completedAppointmentsThisYearQry)->fetch_row()[0];
+    $totalNumOfcompletedAppsLastYear = $db_conn->query($completedAppointmentsLastYearQry)->fetch_row()[0];
+
+    $avgNumOfApptReqsThisYearQry = "SELECT ROUND(COUNT(*) /  $currentMonthNum, 1) AS avg_per_month
+        FROM appointments
+        WHERE YEAR(created_at) = $currentYear AND MONTH(created_at) <= 4;";
+
+    $avgNumOfApptReqsThisYear = $db_conn->query($avgNumOfApptReqsThisYearQry)->fetch_row()[0];
+
+    $growthOfApptReqsCompareQry = "WITH year_data AS (
+        SELECT
+            YEAR(created_at) AS year,
+            COUNT(*) AS total_appointments
+        FROM appointments
+        WHERE MONTH(created_at) <= 4
+            AND YEAR(created_at) IN ($previousYear, $currentYear)
+        GROUP BY YEAR(created_at)
+        )
+
+        SELECT
+        y2025.total_appointments AS appointments_2025,
+        y2024.total_appointments AS appointments_2024,
+        ROUND(
+            ((y2025.total_appointments - y2024.total_appointments) * 100.0) / 
+            NULLIF(y2024.total_appointments, 0), 1
+        ) AS percent_growth
+        FROM
+        year_data y2025
+        JOIN
+        year_data y2024 ON y2025.year = 2025 AND y2024.year = 2024;";
+        
+    $growthOfApptReqsCompare = $db_conn->query($growthOfApptReqsCompareQry)->fetch_row();
+
+    $lastYearsCompletedApptQry = "SELECT YEAR(appt_date) AS year, MONTH(appt_date) AS month, COUNT(*) AS completed_appointments_count
+        FROM  appointments WHERE  status = 'Completed' AND (YEAR(appt_date) = $previousYear)
+        GROUP BY  YEAR(appt_date), MONTH(appt_date)
+        ORDER BY year ASC, month ASC";
+
+    $currentYearsCompletedApptQry = "SELECT YEAR(appt_date) AS year, MONTH(appt_date) AS month, COUNT(*) AS completed_appointments_count
+    FROM  appointments WHERE  status = 'Completed' AND (YEAR(appt_date) = $currentYear)
+    GROUP BY  YEAR(appt_date), MONTH(appt_date)
+    ORDER BY year ASC, month ASC;";
+
+    $completedApptsLastYear = $db_conn->query($lastYearsCompletedApptQry)->fetch_all();
+    $completedApptsThisYear = $db_conn->query($currentYearsCompletedApptQry)->fetch_all();
+
+    $numOfCompletedApptsLastYear = array_map(function($monthData) {
+        return (int) $monthData[2]; 
+    }, $completedApptsLastYear);
+
+    $numOfCompletedApptsThisYear = array_map(function($monthData) {
+        return (int) $monthData[2]; 
+    }, $completedApptsThisYear);
+
+    $percentageOfApptPerConcernQry = "SELECT counseling_concern, COUNT(*) AS request_count
+        FROM appointments WHERE YEAR(appt_date) = YEAR(CURDATE()) AND counseling_concern IS NOT NULL
+        GROUP BY counseling_concern;";
+
+    $apptPerConcern = $db_conn->query($percentageOfApptPerConcernQry)->fetch_all();
+
+    $numPercentageOfApptPerConcern = array_map(function($concernData) {
+        return (int) $concernData[1]; 
+    }, $apptPerConcern);
+
+    $percentageOfApptPerConcernGender = "SELECT atts.gender, COUNT(*) AS appointment_count
+        FROM appointments appt
+        JOIN appt_attendee atts ON appt.attendee_id = atts.attendee_id
+        WHERE YEAR(appt.appt_date) = 2025
+        GROUP BY atts.gender ORDER BY gender DESC;";
+
+    $apptPerGender = $db_conn->query($percentageOfApptPerConcernGender)->fetch_all();
+
+    $numPercentageOfApptPerGender = array_map(function($genderData) {
+        return (int) $genderData[1]; 
+    }, $apptPerGender);
+
+    $numPercentageOfApptPerProgramQry = "SELECT programs.program_name, COUNT(*) AS appointment_count
+        FROM appointments appt
+        LEFT JOIN appt_attendee atts ON appt.attendee_id = atts.attendee_id
+        LEFT JOIN programs ON atts.program_id = programs.program_id
+        WHERE YEAR(appt.created_at) = 2025
+        GROUP BY programs.program_name;";
+
+    $apptPerProgram = $db_conn->query($numPercentageOfApptPerProgramQry)->fetch_all();
+
+    $numPercentageOfApptPerProgram = array_map(function($programData) {
+        return (int) $programData[1]; 
+    }, $apptPerProgram);
 
 ?>
 <!DOCTYPE html>
@@ -50,21 +148,23 @@
     <?php 
         include(__DIR__ . '/../components/counselor/sidebar.php');
     ?>
+
     <main>
         <div class="appt-header-bar px-4 py-3 d-flex align-items-center mb-4">
             <h5 class="mb-0 fw-bold">Appointments</h5>
         </div>
+        
         <div class="px-4 w-100 d-flex gap-3 mb-5">
             <div class="total-analytics-card shadow px-3 py-2 bg-body-tertiary d-flex flex-column justify-content-between gap-2">
                 <div class="d-flex align-items-center justify-content-between">
-                    <p class="fw-bold mb-0 analytics-num fs-1">100</p>
+                    <p class="fw-bold mb-0 analytics-num fs-1"><?php echo $totalNumOfcompletedAppsThisYear; ?></p>
                     <i class="bi bi-calendar-check-fill fs-3" style="color: var(--primary-color)"></i>
                 </div>
                 <p style="font-size: 14px;">Total Number of Appointments Completed This Year</p>
             </div>
             <div class="total-analytics-card shadow px-3 py-2 bg-body-tertiary d-flex flex-column justify-content-between gap-2">
                 <div class="d-flex align-items-center justify-content-between">
-                    <p class="fw-bold mb-0 analytics-num fs-1">100</p>
+                    <p class="fw-bold mb-0 analytics-num fs-1"><?php echo $avgNumOfApptReqsThisYear ?></p>
                     <i class="bi bi-bar-chart-line-fill fs-3" style="color: var(--primary-color)"></i>
                 </div>
                 <div>
@@ -74,11 +174,21 @@
             </div>
             <div class="total-analytics-card shadow px-3 py-2 bg-body-tertiary d-flex flex-column justify-content-between gap-2">
                 <div class="d-flex align-items-center justify-content-between">
-                    <p class="fw-bold mb-0 analytics-num fs-1">100</p>
-                    <!-- <i class="bi bi-arrow-down-right fs-3" style="color: var(--primary-color)"></i> -->
-                    <!-- <i class="bi bi-arrow-up-right fs-3" style="color: var(--primary-color)"></i> -->
+                    <p class="fw-bold mb-0 analytics-num fs-1"><?php echo $growthOfApptReqsCompare[2]; ?> %</p>
+                    <?php if ($growthOfApptReqsCompare[2] < 0) { ?>
+                        <i class="bi bi-arrow-down-right fs-3 text-danger"></i>
+                    <?php } else { ?>
+                        <i class="bi bi-arrow-up-right fs-3 " style="color: var(--primary-color)"></i> 
+                    <?php } ?> 
                 </div>
-                <p style="font-size: 14px;">in number of appointments requested this year compared to last year's total.</p>
+                <p style="font-size: 14px;">
+                    A 
+                    <?php if ($growthOfApptReqsCompare[2] < 0) { ?>
+                        <span class="text-danger"> DECREASE </span>
+                    <?php } else { ?>
+                        <span class="text-primary"> INCREASE </span>
+                    <?php } ?>
+                     in year-to-date appointments compared to the same period last year.</p>
             </div>
         </div>
         <h5 class="fw-bold px-4">Appointment Frequency and Trends</h5>
@@ -117,7 +227,7 @@
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'],
             datasets: [{
                 label: `Appointments Completed Last Year (${getCurrentYear() - oneYearOffset})`,
-                data: [10, 20, 15, 25, 30, 35, 40, 90, 67, 10, 11, 89],
+                data: <?php echo json_encode($numOfCompletedApptsLastYear); ?>,
                 borderColor: 'rgb(180, 75, 192)',
                 backgroundColor: 'rgba(192, 75, 186, 0.2)', 
                 borderWidth: 2,
@@ -126,7 +236,7 @@
             },
             {
                 label: `Appointments Completed This Year (${getCurrentYear()})`,
-                data: [20, 10, 8, 12, 18, 4, 5],
+                data: <?php echo json_encode($numOfCompletedApptsThisYear); ?>,
                 borderColor: 'rgb(75, 126, 192)',
                 backgroundColor: 'rgba(75, 106, 192, 0.2)', 
                 borderWidth: 2,
@@ -181,10 +291,10 @@
         const pieCtx = document.getElementById('pieChart').getContext('2d');
 
         const pieData = {
-            labels: ['Personal', 'Academic', 'Career'],
+            labels: ['Career', 'Academic', 'Personal'],
             datasets: [{
                 label: 'Appointment Categories',
-                data: [50, 30, 20], 
+                data: <?php echo json_encode($numPercentageOfApptPerConcern); ?>,
                 backgroundColor: [
                     'rgba(99, 255, 198, 0.6)', 
                     'rgba(184, 54, 235, 0.6)', 
@@ -228,17 +338,17 @@
         const genderCtx = document.getElementById('genderChart').getContext('2d');
 
         const genderData = {
-            labels: ['Male', 'Female'], 
+            labels: ['Female', 'Male'], 
             datasets: [{
                 label: 'Gender Demographics',
-                data: [60, 35], 
+                data: <?php echo json_encode($numPercentageOfApptPerGender); ?>, 
                 backgroundColor: [
-                    'rgba(54, 162, 235, 0.6)', 
                     'rgba(255, 99, 132, 0.6)', 
+                    'rgba(54, 162, 235, 0.6)'
                 ],
                 borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 99, 132, 1)'
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)'
                 ],
                 borderWidth: 1
             }]
@@ -274,10 +384,23 @@
         const programCtx = document.getElementById('programBarChart').getContext('2d');
 
         const programLabels = [
-            'BSA', 'BSMA', 'BSIT', 'BSENT', 'BSEcE', 
-            'BSIE', 'BECED', 'BSIS', 'BSCS', 'BSCpE'
+            'BECED', 'BSA', 'BSCpE', 'BSCS', 'BSEcE', 
+            'BSENT', 'BSIE', 'BSIS', 'BSIT', 'BSMA'
         ];
-        const programData = [15, 10, 25, 5, 8, 12, 7, 20, 18, 10]; 
+
+        const programsFullNameMap = {
+            'BECED': 'Bachelor of Early Childhood Education',
+            'BSA': 'Bachelor of Science in Accountancy',
+            'BSCpE': 'Bachelor of Science in Computer Engineering',
+            'BSCS': 'Bachelor of Science in Computer Science',
+            'BSEcE': 'Bachelor of Science in Electronics Engineering',
+            'BSENT': 'Bachelor of Science in Entrepreneurship',
+            'BSIE': 'Bachelor of Science in Industrial Engineering',
+            'BSIS': 'Bachelor of Science in Information Systems',
+            'BSIT': 'Bachelor of Science in Information Technology',
+            'BSMA': 'Bachelor of Science in Management Accounting'
+        };
+        const programData = <?php echo json_encode($numPercentageOfApptPerProgram); ?>; 
 
         const programBarData = {
             labels: programLabels,
@@ -312,6 +435,18 @@
                         },
                         padding: {
                             bottom: 20 
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                const label = context[0].label;
+                                return programsFullNameMap[label];
+                            },
+                            label: function(context) {
+                                const value = context.raw;
+                                return `Number of appointment requests: ${value}`;
+                            }
                         }
                     }
                 },
