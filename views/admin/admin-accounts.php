@@ -4,7 +4,7 @@
   include(__DIR__ . "/../../config/utils.php");
   $db_conn = require __DIR__ . "/../../db/db_conn.php";
 
-  if (!isset($_SESSION['adminId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Admin') {
+  if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
     header("location: ../public/counselor-admin-login-page.php");
     exit();
   }
@@ -17,19 +17,19 @@
     $user_id = $_POST['user_id'];
 
     // Fetch current status
-    $stmt = $db_conn->prepare("SELECT status FROM user WHERE user_id = ?");
+    $stmt = $db_conn->prepare("SELECT is_disabled FROM user WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
 
     if ($row) {
-        $currentStatus = $row['status'];
-        $newStatus = ($currentStatus == 'Active') ? 'Disabled' : 'Active';
+      $currentStatus = (bool)$row['is_disabled'];
+      $newStatus = !$currentStatus;       
 
         // Update status
-        $updateStmt = $db_conn->prepare("UPDATE user SET status = ? WHERE user_id = ?");
-        $updateStmt->bind_param("si", $newStatus, $user_id);
+        $updateStmt = $db_conn->prepare("UPDATE user SET is_disabled = ? WHERE user_id = ?");
+        $updateStmt->bind_param("ii", $newStatus, $user_id);        
         if ($updateStmt->execute()) {
             header("Location: {$_SERVER['HTTP_REFERER']}");
             exit();
@@ -112,7 +112,8 @@ if ($stmt = $db_conn->prepare($totalQuery)) {
 
 $totalPages = ceil($totalAccounts / $limit);
 
-$sql = "SELECT s.admin_id, CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name, u.email, u.created_at, u.status, u.user_id FROM admin s JOIN user u ON s.user_id = u.user_id WHERE $whereCondition LIMIT $limit OFFSET $offset";
+$sql = "SELECT s.admin_id, CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name, u.email, u.created_at, u.is_disabled, u.user_id 
+FROM admin s JOIN user u ON s.user_id = u.user_id WHERE $whereCondition LIMIT $limit OFFSET $offset";
 
 if ($stmt = $db_conn->prepare($sql)) {
     if (!empty($params)) {
@@ -122,9 +123,9 @@ if ($stmt = $db_conn->prepare($sql)) {
     $result = $stmt->get_result();
 
     while ($row = $result->fetch_assoc()) {
-        $status = $row['status'];
-        $buttonText = $status == 'Active' ? 'Disable' : 'Activate';
-        $buttonColor = $status == 'Active' ? '#d6534f' : '#198754';
+      $isDisabled = (bool)$row['is_disabled'];
+      $buttonText = $isDisabled ? 'Activate' : 'Disable';
+      $buttonColor = $isDisabled ? '#198754' : '#d6534f';      
 
         echo "<tr>
                 <td>{$row['full_name']}</td>
@@ -174,8 +175,7 @@ if ($stmt = $db_conn->prepare($sql)) {
       </div>
       <div class="modal-body">
         <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
-        <p><strong>Admin Number:</strong> <span id="modalAdminNumber"></span></p>
-        <p><strong>Program:</strong> Bachelor of Science in Information Technology</p>
+        <p><strong>Employee ID:</strong> <span id="modalEmployeeID"></span></p>
         <p><strong>Email:</strong> <span id="modalEmail"></span></p>
         <p><strong>Date Created:</strong> <span id="modalDateCreated"></span></p>
       </div>
@@ -194,7 +194,7 @@ const viewAccountModal = document.getElementById('viewAccountModal');
 viewAccountModal.addEventListener('show.bs.modal', event => {
   const button = event.relatedTarget;
   document.getElementById('modalFullName').textContent = button.getAttribute('data-fullname');
-  document.getElementById('modalAdminNumber').textContent = button.getAttribute('data-studno');
+  document.getElementById('modalEmployeeID').textContent = button.getAttribute('data-studno');
   document.getElementById('modalEmail').textContent = button.getAttribute('data-email');
   document.getElementById('modalDateCreated').textContent = button.getAttribute('data-datecreated');
 });

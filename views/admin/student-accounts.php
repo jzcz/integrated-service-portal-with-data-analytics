@@ -3,30 +3,30 @@ session_start();
 include(__DIR__ . "/../../config/utils.php");
 $conn = require __DIR__ . "/../../db/db_conn.php"; 
 
-if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
   header("location: ../public/counselor-admin-login-page.php");
   exit();
 }
 
 if (isset($_POST['toggle'])) {
-    $user_id = $_POST['user_id'];
+  $user_id = $_POST['user_id'];
 
-    // Get current status
-    $stmt = $conn->prepare("SELECT status FROM user WHERE user_id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+  $stmt = $conn->prepare("SELECT is_disabled FROM user WHERE user_id = ?");
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $row = $result->fetch_assoc();
 
-    if ($row) {
-        $newStatus = ($row['status'] === 'Active') ? 'Disabled' : 'Active';
-        $updateStmt = $conn->prepare("UPDATE user SET status = ? WHERE user_id = ?");
-        $updateStmt->bind_param("si", $newStatus, $user_id);
-        $updateStmt->execute();
-        header("Location: " . $_SERVER['HTTP_REFERER']);
-        exit();
-    }
+  if ($row) {
+      $newDisabled = $row['is_disabled'] ? 0 : 1;
+      $updateStmt = $conn->prepare("UPDATE user SET is_disabled = ? WHERE user_id = ?");
+      $updateStmt->bind_param("ii", $newDisabled, $user_id);
+      $updateStmt->execute();
+      header("Location: " . $_SERVER['HTTP_REFERER']);
+      exit();
+  }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -92,7 +92,7 @@ $totalPages = ceil($countResult['total'] / $limit);
 
 // Fetch paginated results
 $dataSQL = "SELECT s.student_no, CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name,
-            u.email, u.created_at, u.status, u.user_id
+            u.email, u.created_at, u.is_disabled, u.user_id
             FROM students s
             JOIN user u ON s.user_id = u.user_id
             WHERE $where
@@ -109,10 +109,10 @@ if ($types) {
 $dataStmt->execute();
 $result = $dataStmt->get_result();
 
-while ($row = $result->fetch_assoc()) {
-    $status = $row['status'];
-    $buttonText = $status === 'Active' ? 'Disable' : 'Activate';
-    $buttonColor = $status === 'Active' ? '#d6534f' : '#198754';
+  while ($row = $result->fetch_assoc()) {
+    $isDisabled = (bool)$row['is_disabled'];
+    $buttonText = $isDisabled ? 'Activate' : 'Disable';
+    $buttonColor = $isDisabled ? '#198754' : '#d6534f';  
 
     echo "<tr>
             <td>{$row['full_name']}</td>
@@ -167,7 +167,7 @@ while ($row = $result->fetch_assoc()) {
       </div>
       <div class="modal-body">
         <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
-        <p><strong>Student Number:</strong> <span id="modalStudentNumber"></span></p>
+        <p><strong>Student Number:</strong> <span id="modalStudentNo"></span></p>
         <p><strong>Program:</strong> Bachelor of Science in Information Technology</p>
         <p><strong>Email:</strong> <span id="modalEmail"></span></p>
         <p><strong>Date Created:</strong> <span id="modalDateCreated"></span></p>
@@ -186,7 +186,7 @@ const viewAccountModal = document.getElementById('viewAccountModal');
 viewAccountModal.addEventListener('show.bs.modal', event => {
   const button = event.relatedTarget;
   document.getElementById('modalFullName').textContent = button.getAttribute('data-fullname');
-  document.getElementById('modalStudentNumber').textContent = button.getAttribute('data-studno');
+  document.getElementById('modalStudentNo').textContent = button.getAttribute('data-studno');
   document.getElementById('modalEmail').textContent = button.getAttribute('data-email');
   document.getElementById('modalDateCreated').textContent = button.getAttribute('data-datecreated');
 });
