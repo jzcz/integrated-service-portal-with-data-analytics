@@ -1,11 +1,11 @@
 <?php 
     session_start();
 
-        // check session first exists first
-    // if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
-    //     header("location: ../public/counselor-admin-login-page.php");
-    //     exit();
-    // }
+    // check session first if exists 
+    if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+        header("location: ../public/counselor-admin-login-page.php");
+        exit();
+    }
 
     require(__DIR__ . "/../../queries/appointments.php");
     include(__DIR__ . "/../../config/utils.php");
