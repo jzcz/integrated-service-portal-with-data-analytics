@@ -34,8 +34,8 @@
       exit();
     } 
 
-    if(!$user['is_disabled']) {
-      header("location: " . $_SERVER["PHP_SELF"] . "?err=Your account is disabled. Please contact the QCU Guidance and Counseling Office for support.");
+    if($user['is_disabled']) {
+      header("location: " . $_SERVER["PHP_SELF"] . "?err=Your account is disabled. Please contact the QCU Guidance and Counseling Office Admin for assistance.");
       exit();
     } 
 
