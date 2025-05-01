@@ -3,7 +3,7 @@ session_start();
 include(__DIR__ . "/../../config/utils.php");
 $conn = require __DIR__ . "/../../db/db_conn.php"; 
 
-if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+if (!isset($_SESSION['adminId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Admin') {
   header("location: ../public/counselor-admin-login-page.php");
   exit();
 }
