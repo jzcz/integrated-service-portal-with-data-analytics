@@ -1,15 +1,24 @@
-<?php 
-    session_start();
-
+<?php
     require(__DIR__ . "/../../queries/students.php");
     include(__DIR__ . "/../../config/utils.php");
-    
+
     // check session first exists first
     if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
         header("location: ../service-portal/login.php");
         exit();
     }
 
+    // Database connection
+    $db_conn = require(__DIR__ . "/../../db/db_conn.php");
+
+    // Fetch announcements
+    $announcementsQry = "SELECT * FROM announcements;";
+    $stmt = $db_conn->prepare($announcementsQry);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $announcements = $result->fetch_all(MYSQLI_ASSOC);
+
+    $db_conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,104 +49,70 @@
         
     <!-- INDICATORS -->
       <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></button>
+          <?php foreach ($announcements as $index => $announcement): ?>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<?= $index ?>" class="<?= $index === 0 ? 'active' : '' ?>" aria-current="true"></button>
+          <?php endforeach; ?>
       </div>
 
-      <div class="carousel-inner"> 
-          <!-- BATCH 1 -->
-          <div class="carousel-item active">
-              <div class="row gx-4 gy-4 justify-content-center"> <div class="col-md-4 col-sm-6 d-flex justify-content-center">
-                      <div class="card card-shadow">
-                            <img src="../../static/announ1.jpg" class="card-img-top">
-                            <div class="card-body text-center">
-                                <h9 class="card-title"><u>Quezon City Scholarship Program (QCYDO) Onsite Application Assistance & Renewal Enlistment</u></h9>
-                                <p class="card-text custom-font-size">
-                                March 29, 2024 <br>
-                                Good news! The Quezon City Youth Development Office will go to the Main Campus of Quezon City University at San Bartolome, Novaliches to conduct onsite assistance to QCU Students. This will be held on 𝗔𝗽𝗿𝗶𝗹 𝟮-𝟯, 𝟮𝟬𝟮𝟰, from 8 AM to 5 PM at the QCU, San Bartolome Campus, TechVoc GYM…
-                                </p>
-                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
-                            </div>
-                       </div>
-               </div>
+      <div class="carousel-inner">
+          <?php foreach (array_chunk($announcements, 3) as $index => $announcementChunk): ?>
+              <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                  <div class="row gx-4 gy-4 justify-content-center">
+                      <?php foreach ($announcementChunk as $announcement): ?>
+                          <div class="col-md-4 d-flex justify-content-center">
+                              <div class="card card-shadow">
+                              <img 
+                                src="<?= !empty($announcement['img_url']) ? htmlspecialchars('../../' . $announcement['img_url']) : '../../static/default_img.jpg'; ?>" 
+                                class="card-img-top" 
+                                alt="Announcement Image"
+                                onerror="this.onerror=null; this.src='../../static/default_img.jpg';">
 
-                    <div class="col-md-4 col-sm-6 d-flex justify-content-center">
-                        <div class="card card-shadow">
-                            <img src="../../static/announ2.jpg" class="card-img-top">
-                            <div class="card-body text-center">
-                                <h6 class="card-title"><u>Mental Health Check-In for QCU Students</u></h6>
-                                <p class="card-text custom-font-size">
-                                January 30, 2025 <br>  
-                                FOR: All Year Levels <br>     
-                                The Quezon City University (QCU) Guidance Unit invites all students to participate in a quick and confidential Mental Health Check-In. This initiative aims to provide psychological support to students experiencing mental health issues or emotional distress...
-                                </p>
-                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
-                            </div>
-                        </div>
-                    </div>
+                                  <div class="card-body text-center">
+                                      <h6 class="card-title"><u><?= htmlspecialchars($announcement['title']) ?></u></h6>
+                                      <p class="card-text custom-font-size">
+                                          <?= htmlspecialchars($announcement['description']) ?>
+                                      </p>
+                                      <a href="javascript:void(0);" 
+   class="view-announcement-btn btn btn-sm" 
+   data-bs-toggle="modal" 
+   data-bs-target="#announcementModal" 
+   data-img="<?= htmlspecialchars($announcement['img_url']) ?>" 
+   data-description="<?= htmlspecialchars($announcement['description']) ?>">
+   READ MORE
+</a>
+                                  </div>
+                              </div>
+                          </div>
+                      <?php endforeach; ?>
 
-                    <div class="col-md-4 col-sm-6 d-flex justify-content-center">
-                        <div class="card card-shadow">
-                            <img src="../../static/announ3.jpg" class="card-img-top">
-                            <div class="card-body text-center">
-                                <h6 class="card-title"><u>QCU Guidance Office Launches Online Psychological Testing for 1st and 2nd Year Students (AY 2024-2025) on All Campuses</u></h6>
-                                <p class="card-text custom-font-size">
-                                December 11, 2024 <br>
-                                FOR: All 1st and 2nd year QCians on all campuses are required to take the online psychological test.
-                                The Guidance & Counseling Unit of Quezon City University (QCU) is launching the Online Psychological Testing for all 1st and 2nd-year QCians across all...
-                                </p>
-                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                      <?php for ($i = count($announcementChunk); $i < 3; $i++): ?>
+                          <div class="col-md-4 d-flex justify-content-center">
+                              <div class="card card-shadow" style="visibility: hidden;"></div>
+                          </div>
+                      <?php endfor; ?>
+                  </div>
+              </div>
+          <?php endforeach; ?>
+      </div>
+
+      <!-- Modal -->
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="announcementModalLabel">Announcement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
-            <!-- BATCH 2 -->
-            <div class="carousel-item">
-                <div class="row gx-4 gy-4 justify-content-center">
-                    <div class="col-md-4 col-sm-6 d-flex justify-content-center">
-                        <div class="card card-shadow">
-                            <img src="../../static/announ1.jpg" class="card-img-top">
-                            <div class="card-body text-center">
-                                <h6 class="card-title"><u>QCU Guidance Office Launches Online Psychological Testing for 1st and 2nd Year Students (AY 2024-2025) on All Campuses</u></h6>
-                                <p class="card-text custom-font-size">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                </p>
-                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 d-flex justify-content-center">
-                        <div class="card card-shadow">
-                            <img src="../../static/announ2.jpg" class="card-img-top">
-                            <div class="card-body text-center">
-                                <h6 class="card-title"><u>QCU Guidance Office Launches Online Psychological Testing for 1st and 2nd Year Students (AY 2024-2025) on All Campuses</u></h6>
-                                <p class="card-text custom-font-size">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                </p>
-                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 d-flex justify-content-center">
-                        <div class="card card-shadow">
-                            <img src="../../static/announ3.jpg" class="card-img-top">
-                            <div class="card-body text-center">
-                                <h6 class="card-title"><u>QCU Guidance Office Launches Online Psychological Testing for 1st and 2nd Year Students (AY 2024-2025) on All Campuses</u></h6>
-                                <p class="card-text custom-font-size">Description</p>
-                                <a href="#" class="view-announcement-btn btn btn-sm">READ MORE</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Announcement Image" class="img-fluid mb-3">
+                <p id="modalDescription" class="text-start"></p>
             </div>
-
-
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
         </div>
+    </div>
+</div>
         <!-- NAVIGATION -->
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -154,16 +129,48 @@
     </main>
     <!--- ACTIVE PAGE HIGHLIGHT --->
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const sidebarNavItems = document.querySelectorAll('.nav-item.sidebar-nav-item');
-  sidebarNavItems.forEach(item => {
-    const link = item.querySelector('a');
-    if (link && link.textContent.trim() === 'Announcements') {
-      item.classList.add('active');
-    }
-  });
+    document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('announcementModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalDescription = document.getElementById('modalDescription');
+
+    document.querySelectorAll('.view-announcement-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            let imgSrc = this.getAttribute('data-img');
+            const description = this.getAttribute('data-description');
+
+            if (!imgSrc || imgSrc.trim() === "") {
+                imgSrc = 'static/default_img.jpg';
+            }
+
+            modalImage.src = "../../" + imgSrc;
+            modalImage.onerror = function() {
+                this.onerror = null;
+                this.src = '../../static/default_img.jpg';
+            };
+
+            modalDescription.innerHTML = description;
+        });
+    });
+
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.onerror = function () {
+            this.onerror = null;
+            this.src = '../../static/default_img.jpg';
+        };
+    });
+
+    const sidebarNavItems = document.querySelectorAll('.nav-item.sidebar-nav-item');
+    sidebarNavItems.forEach(item => {
+        const link = item.querySelector('a');
+        if (link && link.textContent.trim() === 'Announcements') {
+            item.classList.add('active');
+        }
+    });
 });
-    </script>
+</script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
  </body>
 </html>
