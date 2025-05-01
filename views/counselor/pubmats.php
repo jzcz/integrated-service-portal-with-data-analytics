@@ -4,6 +4,11 @@
     include(__DIR__ . "/../../config/utils.php");
     require __DIR__ . "/../../db/media_store.php";
 
+    if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+      header("location: ../public/counselor-admin-login-page.php");
+      exit();
+  }  
+  
     // Database connection
     $db_conn = require(__DIR__ . "/../../db/db_conn.php");
 
