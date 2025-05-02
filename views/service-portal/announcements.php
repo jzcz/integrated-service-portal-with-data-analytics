@@ -13,8 +13,8 @@
     // Database connection
     $db_conn = require(__DIR__ . "/../../db/db_conn.php");
 
-    // Fetch announcements
-    $announcementsQry = "SELECT * FROM announcements;";
+    // Fetch announcements, excluding those that are archived
+    $announcementsQry = "SELECT * FROM announcements WHERE is_archived = FALSE ORDER BY created_at DESC;";
     $stmt = $db_conn->prepare($announcementsQry);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -24,7 +24,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,68 +37,63 @@
     <link rel="stylesheet" href="../../assets/css/service-portal.css">
 </head>
 <body>
-    <?php 
+    <?php
         include(__DIR__ . '/../components/service-portal/navbar.php');
     ?>
     <main>
-      <!--- BG IMAGE --->
-    <img src="../../static/qcu acad.bldg.png" class="bg" alt="...">
-    <!--- ANNOUNCEMENT --->
+        <img src="../../static/qcu acad.bldg.png" class="bg" alt="...">
     <div class="container my-3">
     <h2 class="text-center mb-4 fw-bold custom-blue">Announcements</h2>
     <div class="container mt-4">
     <div id="carouselExampleIndicators" class="carousel slide">
-        
-    <!-- INDICATORS -->
-      <div class="carousel-indicators">
-          <?php foreach ($announcements as $index => $announcement): ?>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<?= $index ?>" class="<?= $index === 0 ? 'active' : '' ?>" aria-current="true"></button>
-          <?php endforeach; ?>
-      </div>
 
-      <div class="carousel-inner">
-          <?php foreach (array_chunk($announcements, 3) as $index => $announcementChunk): ?>
-              <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                  <div class="row gx-4 gy-4 justify-content-center">
-                      <?php foreach ($announcementChunk as $announcement): ?>
-                          <div class="col-md-4 d-flex justify-content-center">
-                              <div class="card card-shadow">
-                              <img 
-                                src="<?= !empty($announcement['img_url']) ? htmlspecialchars('../../' . $announcement['img_url']) : '../../static/default_img.jpg'; ?>" 
-                                class="card-img-top" 
-                                alt="Announcement Image"
-                                onerror="this.onerror=null; this.src='../../static/default_img.jpg';">
+        <div class="carousel-indicators">
+            <?php foreach ($announcements as $index => $announcement): ?>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<?= $index ?>" class="<?= $index === 0 ? 'active' : '' ?>" aria-current="true"></button>
+            <?php endforeach; ?>
+        </div>
 
-                                  <div class="card-body text-center">
-                                      <h6 class="card-title"><u><?= htmlspecialchars($announcement['title']) ?></u></h6>
-                                      <p class="card-text custom-font-size">
-                                          <?= htmlspecialchars($announcement['description']) ?>
-                                      </p>
-                                      <a href="javascript:void(0);" 
-   class="view-announcement-btn btn btn-sm" 
-   data-bs-toggle="modal" 
-   data-bs-target="#announcementModal" 
-   data-img="<?= htmlspecialchars($announcement['img_url']) ?>" 
-   data-description="<?= htmlspecialchars($announcement['description']) ?>">
-   READ MORE
+        <div class="carousel-inner">
+            <?php foreach (array_chunk($announcements, 3) as $index => $announcementChunk): ?>
+                <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                    <div class="row gx-4 gy-4 justify-content-center">
+                        <?php foreach ($announcementChunk as $announcement): ?>
+                            <div class="col-md-4 d-flex justify-content-center">
+                                <div class="card card-shadow">
+                                    <img
+                                        src="<?= htmlspecialchars($announcement['img_url']) ?>"
+                                        class="card-img-top announcement-image" alt="Announcement Image"
+                                        onerror="this.onerror=null; this.src='../../static/default_img.jpg';">
+
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title"><u><?= htmlspecialchars($announcement['title']) ?></u></h6>
+                                            <p class="card-text custom-font-size">
+                                                <?= htmlspecialchars($announcement['description']) ?>
+                                            </p>
+                                            <a href="javascript:void(0);"
+    class="view-announcement-btn btn btn-sm"
+    data-bs-toggle="modal"
+    data-bs-target="#announcementModal"
+    data-img="<?= htmlspecialchars($announcement['img_url']) ?>"
+    data-description="<?= htmlspecialchars($announcement['description']) ?>">
+    READ MORE
 </a>
-                                  </div>
-                              </div>
-                          </div>
-                      <?php endforeach; ?>
+                                        </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
 
-                      <?php for ($i = count($announcementChunk); $i < 3; $i++): ?>
-                          <div class="col-md-4 d-flex justify-content-center">
-                              <div class="card card-shadow" style="visibility: hidden;"></div>
-                          </div>
-                      <?php endfor; ?>
-                  </div>
-              </div>
-          <?php endforeach; ?>
-      </div>
+                        <?php for ($i = count($announcementChunk); $i < 3; $i++): ?>
+                            <div class="col-md-4 d-flex justify-content-center">
+                                <div class="card card-shadow" style="visibility: hidden;"></div>
+                            </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
 
-      <!-- Modal -->
-<div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+        <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -115,12 +110,11 @@
         </div>
     </div>
 </div>
-        <!-- NAVIGATION -->
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        
+
         <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
@@ -129,7 +123,6 @@
     </div>
 </div>
     </main>
-    <!--- ACTIVE PAGE HIGHLIGHT --->
     <script>
     document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('announcementModal');
@@ -142,10 +135,10 @@
             const description = this.getAttribute('data-description');
 
             if (!imgSrc || imgSrc.trim() === "") {
-                imgSrc = 'static/default_img.jpg';
+                imgSrc = '../../static/default_img.jpg';
             }
 
-            modalImage.src = "../../" + imgSrc;
+            modalImage.src = imgSrc; // Directly use the full URL from data-img
             modalImage.onerror = function() {
                 this.onerror = null;
                 this.src = '../../static/default_img.jpg';
@@ -155,7 +148,7 @@
         });
     });
 
-    const images = document.querySelectorAll('img');
+    const images = document.querySelectorAll('.announcement-image'); // Select only announcement images
     images.forEach(img => {
         img.onerror = function () {
             this.onerror = null;
@@ -174,5 +167,5 @@
 </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
- </body>
+</body>
 </html>
