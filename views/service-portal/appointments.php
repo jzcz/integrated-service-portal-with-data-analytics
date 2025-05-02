@@ -409,14 +409,9 @@ appointtermsModal.addEventListener('click', function (event) {
         appointtermsModal.style.display = 'none';
       }
     });
-    appointsuccessModal.addEventListener('click', function (event) {
-      if (event.target === appointsuccessModal)
-       {
-        appointsuccessModal.style.display = 'none';
-      }
+    
 
-
-    })
+    
     
 
 
