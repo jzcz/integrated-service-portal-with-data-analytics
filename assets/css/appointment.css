@@ -149,6 +149,68 @@ Appointment css
   width: 100%;
 }
 
+.appoint-dropdown-year-btn {
+  width: 500%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+}
+
+.appoint-dropdown-year-btn::after {
+  content: "▼";
+  position: absolute;
+  right: 15px;
+  font-size: 12px;
+}
+
+.appoint-dropdown-menu {
+  display: none;
+  position: absolute;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+  margin-top: 5px;
+  z-index: 1000;
+}
+
+.appoint-dropdown-item {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  
+}
+
+.appoint-dropdownyear-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  left: 50px;
+}
+
+.appoint-dropdownyear-btn::after {
+  content: "▼";
+  position: absolute;
+  right: 15px;
+  font-size: 12px;
+}
+
+
 .appoint-dropdown-btn {
   width: 100%;
   padding: 10px;
