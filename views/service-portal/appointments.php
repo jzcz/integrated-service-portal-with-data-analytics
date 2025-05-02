@@ -403,15 +403,8 @@ document.getElementById('appointcloseSuccessModal').addEventListener('click', fu
   document.getElementById('appointsuccessModal').style.display = 'none';
 });
 
-appointtermsModal.addEventListener('click', function (event) {
-      if (event.target === appointtermsModal)
-       {
-        appointtermsModal.style.display = 'none';
-      }
-    });
-    
 
-    
+  
     
 
 
