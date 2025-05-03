@@ -1,7 +1,7 @@
 <?php
 
     function getAllPrograms($db_conn) {
-        $qry = "SELECT * FROM programs"; 
+        $qry = "SELECT program_id, program_name FROM programs"; 
         $stmt = $db_conn->query($qry);  
         return $stmt->fetch_all(MYSQLI_ASSOC);
     }
@@ -27,10 +27,12 @@
     }
 
     function getStudentByStudId($db_conn, $studId) {
-        $qry = "SELECT * FROM students WHERE student_id = ?;";
+        $qry = "SELECT s.*, u.email
+                FROM students s
+                INNER JOIN user u ON s.user_id = u.user_id
+                WHERE s.student_id = ?;";
         $stmt = $db_conn->prepare($qry);
         $stmt->bind_param("i", $studId);
-
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->fetch_assoc();
@@ -93,11 +95,24 @@
 
             return $res->fetch_assoc();
         } catch (Exception $e) {
-            // An exception has been thrown
-            // We must rollback the transaction
+            
             $db_conn->rollback();
-            echo $e->getMessage(); // but the error must be handled anyway
+            echo $e->getMessage(); 
         }
     }
 
+
+    function submitGmcRequest($db_conn, $firstName, $middleName, $lastName, $suffix, $studentNo, $programId, $startSchoolYear, $endSchoolYear, $semester, $reasonDesc, $specifyReason, $proofImgUrl, $contactNo, $email) {
+        $query = "INSERT INTO good_moral_cert_reqs (
+                        first_name, middle_name, last_name, suffix,
+                        student_no, program_id, start_school_year, last_school_year,
+                        semester, reason_desc, additional_req_des, proof_img_url, contact_no, email
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $db_conn->prepare($query);
+        $stmt->bind_param("ssssssssssssss",
+                            $firstName, $middleName, $lastName, $suffix,
+                            $studentNo, $programId, $startSchoolYear, $endSchoolYear,
+                            $semester, $reasonDesc, $specifyReason, $proofImgUrl, $contactNo, $email);
+        return $stmt->execute();
+    }
 ?>

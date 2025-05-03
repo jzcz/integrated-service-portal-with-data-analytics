@@ -1,19 +1,33 @@
-<?php 
-    session_start();
+<?php
+session_start();
 
-    require(__DIR__ . "/../../queries/students.php");
-    include(__DIR__ . "/../../config/utils.php");
-    
-    // check session first exists first
-    if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
-      header("location: ../service-portal/login.php");
-      exit();
-  }
+require(__DIR__ . "/../../queries/students.php");
+include(__DIR__ . "/../../config/utils.php");
+$db_conn = require(__DIR__."/../../db/db_conn.php");
+
+// Check if the student is logged in
+if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+    // Redirect to login if not logged in
+    header("location: ../service-portal/login.php");
+    exit();
+}
+
+$studentId = $_SESSION['studentId'];
+
+// Fetch the student's data using the ID
+$studentData = getStudentByStudId($db_conn, $studentId);
+
+// Check if student data was found
+if (!$studentData) {
+    // Handle the case where student data couldn't be retrieved
+    echo "Error: Could not retrieve student information.";
+    exit();
+}
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,56 +55,65 @@
         include(__DIR__ . '/../components/service-portal/navbar.php');
     ?>
     <main>
-  <div class="container mt-4 d-flex flex-column align-items-center">
-    <h2 class="text-primary-emphasis text-center pt-5 mb-3 student-profile-header"><b>Student Profile</b></h2>
-    <div class="text-center mb-3">
-      <img src="../../static/profile1.png" alt="Profile Icon" width="150" height="150">
-      <h3 class="pt-3">Jazelle L. Cruz</h3>
-      <p class="text-muted">Bachelor of Science in Information Technology</p>
-    </div>
-    <div class="card bg-white student-details-card" style="max-width: 600px; min-height: 200px; border-radius: 0; margin-bottom: 16rem;">
-     <div class="card-body py-2 px-3">  
-      <form>
-         <div class="row gx-1 align-items-center">
-           <label for="studentNumber" class="col-md-5 col-form-label fw-bold smaller">Student Number</label>
-           <div class="col-md-7 text-end">
-             <input type="text" class="form-control-plaintext smaller text-end" id="studentNumber" value="23-2000" readonly>
-           </div>
-         </div>
-         <div class="row gx-1 align-items-center">
-           <label for="qcuEmail" class="col-md-5 col-form-label fw-bold smaller">QCU Email</label>
-           <div class="col-md-7 text-end">
-             <input type="email" class="form-control-plaintext smaller text-end" id="qcuEmail" value="jazelle.cruz@gmail.com" readonly>
-           </div>
-         </div>
-         <div class="row gx-1 align-items-center">
-           <label for="birthdate" class="col-md-5 col-form-label fw-bold smaller">Birthdate</label>
-           <div class="col-md-7 text-end">
-             <input type="text" class="form-control-plaintext smaller text-end" id="birthdate" value="February 30, 2000" readonly>
-           </div>
-         </div>
-         <div class="row gx-1 align-items-center">
-           <label for="gender" class="col-md-5 col-form-label fw-bold smaller">Gender</label>
-           <div class="col-md-7 text-end">
-             <input type="text" class="form-control-plaintext smaller text-end" id="gender" value="Female" readonly>
-           </div>
-         </div>
-         <div class="row gx-1 align-items-center">
-           <label for="campus" class="col-md-5 col-form-label fw-bold smaller">Campus</label>
-           <div class="col-md-7 text-end">
-             <input type="text" class="form-control-plaintext smaller text-end" id="campus" value="Main Campus - San Bartolome" readonly>
-           </div>
-         </div>
-         <div class="row gx-1 align-items-center">
-           <label for="yearLevel" class="col-md-5 col-form-label fw-bold smaller">Current Year Level</label>
-           <div class="col-md-7 text-end">
-             <input type="text" class="form-control-plaintext smaller text-end" id="yearLevel" value="2nd Year" readonly>
-           </div>
-         </div>
-         <div class="vertical-line">
-       </div>  
-      </div>
-   </div>
+    <div class="container mt-4 d-flex flex-column align-items-center">
+        <h2 class="text-primary-emphasis text-center pt-5 mb-3 student-profile-header"><b>Student Profile</b></h2>
+        <div class="text-center mb-3">
+        <img src="../../static/profile1.png" alt="Profile Icon" width="150" height="150">
+        <h3 class="pt-3"><?php echo htmlspecialchars($studentData['first_name'] . ' ' . $studentData['last_name']); ?></h3>
+        <p class="text-muted"><?php
+            // Fetch program name based on program_id
+            $programId = $studentData['program_id'] ?? null;
+            if ($programId) {
+                // Assuming you have a function to get program name by ID in utils.php
+                echo htmlspecialchars(getProgramNameById($db_conn, $programId) ?? '');
+            } else {
+                echo "";
+            }
+        ?></p>
+        </div>
+        <div class="card bg-white student-details-card" style="max-width: 600px; min-height: 200px; border-radius: 0; margin-bottom: 16rem;">
+        <div class="card-body py-2 px-3">
+        <form>
+            <div class="row gx-1 align-items-center">
+            <label for="studentNumber" class="col-md-5 col-form-label fw-bold smaller">Student Number</label>
+            <div class="col-md-7 text-end">
+                <input type="text" class="form-control-plaintext smaller text-end" id="studentNumber" value="<?php echo htmlspecialchars($studentData['student_no'] ?? ''); ?>" readonly>
+            </div>
+            </div>
+            <div class="row gx-1 align-items-center">
+            <label for="qcuEmail" class="col-md-5 col-form-label fw-bold smaller">QCU Email</label>
+            <div class="col-md-7 text-end">
+            <input type="email" class="form-control-plaintext smaller text-end" id="qcuEmail" value="<?php echo htmlspecialchars($studentData['email'] ?? ''); ?>" readonly>
+            </div>
+            </div>
+            <div class="row gx-1 align-items-center">
+            <label for="birthdate" class="col-md-5 col-form-label fw-bold smaller">Birthdate</label>
+            <div class="col-md-7 text-end">
+                <input type="text" class="form-control-plaintext smaller text-end" id="birthdate" value="<?php echo htmlspecialchars($studentData['birthdate'] ?? ''); ?>" readonly>
+            </div>
+            </div>
+            <div class="row gx-1 align-items-center">
+            <label for="gender" class="col-md-5 col-form-label fw-bold smaller">Gender</label>
+            <div class="col-md-7 text-end">
+                <input type="text" class="form-control-plaintext smaller text-end" id="gender" value="<?php echo htmlspecialchars($studentData['gender'] ?? ''); ?>" readonly>
+            </div>
+            </div>
+            <div class="row gx-1 align-items-center">
+            <label for="campus" class="col-md-5 col-form-label fw-bold smaller">Campus</label>
+            <div class="col-md-7 text-end">
+                <input type="text" class="form-control-plaintext smaller text-end" id="campus" value="<?php echo htmlspecialchars($studentData['campus'] ?? ''); ?>" readonly>
+            </div>
+            </div>
+            <div class="row gx-1 align-items-center">
+            <label for="yearLevel" class="col-md-5 col-form-label fw-bold smaller">Current Year Level</label>
+            <div class="col-md-7 text-end">
+                <input type="text" class="form-control-plaintext smaller text-end" id="yearLevel" value="<?php echo htmlspecialchars($studentData['current_year_level'] ?? ''); ?>" readonly>
+            </div>
+            </div>
+            <div class="vertical-line">
+        </div>
+        </div>
+        </div>
 
    <style>
      .vertical-line {

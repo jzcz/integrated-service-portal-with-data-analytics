@@ -26,11 +26,11 @@
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-pencil-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="../counselor/">Assessments</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/assessments.php">Assessments</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-ui-radios-grid"></i>
-                        <a class="nav-link active" aria-current="page" href="../counselor/">Surveys</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/surveys.php">Surveys</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-file-earmark-fill"></i>
@@ -40,7 +40,7 @@
                     <li class="fw-bold nav-link-title">Account</li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-person-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="../counselor/">Profile</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/profile.php">Profile</a>
                     </li>
                     <li class="py-2 nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-power"></i>

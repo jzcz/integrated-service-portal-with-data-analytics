@@ -21,4 +21,19 @@
         $fileName = $name . '_' . $uniqueId;
         return $fileName;
     }
+
+    function getProgramNameById($db_conn, $programId) {
+        $qry = "SELECT program_name FROM programs WHERE program_id = ?;";
+        $stmt = $db_conn->prepare($qry);
+        if ($stmt) {
+            $stmt->bind_param("i", $programId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $program = $result->fetch_assoc();
+            return $program['program_name'] ?? null;
+            $stmt->close();
+        } else {
+            return null;
+        }
+    }
 ?>

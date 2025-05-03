@@ -4,41 +4,40 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be174aa4d73633434c1ba420cc68b923",
+    "content-hash": "3e38c9d40357d3233e8f42b23a66371b",
     "packages": [
         {
             "name": "cloudinary/cloudinary_php",
-            "version": "2.14.0",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cloudinary/cloudinary_php.git",
-                "reference": "5967558bbf5d88e851ebd554559e850ac45b9236"
+                "reference": "f87f0635aa6fc950b1cd99257ac04342914cec6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cloudinary/cloudinary_php/zipball/5967558bbf5d88e851ebd554559e850ac45b9236",
-                "reference": "5967558bbf5d88e851ebd554559e850ac45b9236",
+                "url": "https://api.github.com/repos/cloudinary/cloudinary_php/zipball/f87f0635aa6fc950b1cd99257ac04342914cec6c",
+                "reference": "f87f0635aa6fc950b1cd99257ac04342914cec6c",
                 "shasum": ""
             },
             "require": {
-                "cloudinary/transformation-builder-sdk": "^1",
+                "cloudinary/transformation-builder-sdk": "^2",
                 "ext-json": "*",
-                "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
+                "guzzlehttp/guzzle": "^7.4.5",
                 "guzzlehttp/promises": "^1.5.3|^2.0",
-                "guzzlehttp/psr7": "^1.9.1|^2.5",
-                "monolog/monolog": "^1|^2|^3",
-                "php": ">=5.6.0",
-                "psr/log": "^1|^2|^3"
+                "guzzlehttp/psr7": "^2.7",
+                "monolog/monolog": "^2|^3",
+                "php": ">=8.0.0",
+                "psr/log": "^2|^3"
             },
             "require-dev": {
-                "consolidation/robo": "~1",
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-zip": "*",
                 "friendsofphp/php-cs-fixer": "*",
                 "phpmd/phpmd": "*",
-                "squizlabs/php_codesniffer": "3.*",
-                "symfony/phpunit-bridge": "^5.2"
+                "squizlabs/php_codesniffer": "*",
+                "symfony/phpunit-bridge": "^7.2"
             },
             "type": "library",
             "autoload": {
@@ -68,37 +67,36 @@
             "support": {
                 "email": "info@cloudinary.com",
                 "issues": "https://github.com/cloudinary/cloudinary_php/issues",
-                "source": "https://github.com/cloudinary/cloudinary_php/tree/2.14.0"
+                "source": "https://github.com/cloudinary/cloudinary_php/tree/3.1.0"
             },
-            "time": "2024-05-07T15:14:12+00:00"
+            "time": "2025-01-14T23:17:05+00:00"
         },
         {
             "name": "cloudinary/transformation-builder-sdk",
-            "version": "1.5.0",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cloudinary/php-transformation-builder-sdk.git",
-                "reference": "8c225472e96291a7af23ddf8947bdf31baac403e"
+                "reference": "6ff4a84f14dbc5197563db63b6abbbe77a68d7e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cloudinary/php-transformation-builder-sdk/zipball/8c225472e96291a7af23ddf8947bdf31baac403e",
-                "reference": "8c225472e96291a7af23ddf8947bdf31baac403e",
+                "url": "https://api.github.com/repos/cloudinary/php-transformation-builder-sdk/zipball/6ff4a84f14dbc5197563db63b6abbbe77a68d7e7",
+                "reference": "6ff4a84f14dbc5197563db63b6abbbe77a68d7e7",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": ">=5.6.0"
+                "php": ">=8.0.0"
             },
             "require-dev": {
-                "consolidation/robo": "~1",
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-zip": "*",
                 "friendsofphp/php-cs-fixer": "*",
                 "phpmd/phpmd": "*",
-                "squizlabs/php_codesniffer": "3.*",
-                "symfony/phpunit-bridge": "^5.2"
+                "squizlabs/php_codesniffer": "*",
+                "symfony/phpunit-bridge": "^7.2"
             },
             "type": "library",
             "autoload": {
@@ -128,9 +126,9 @@
             "support": {
                 "email": "info@cloudinary.com",
                 "issues": "https://github.com/cloudinary/php-transformation-builder-sdk/issues",
-                "source": "https://github.com/cloudinary/php-transformation-builder-sdk/tree/1.5.0"
+                "source": "https://github.com/cloudinary/php-transformation-builder-sdk/tree/2.1.2"
             },
-            "time": "2024-05-27T12:26:00+00:00"
+            "time": "2025-02-03T11:14:03+00:00"
         },
         {
             "name": "fakerphp/faker",
@@ -1563,16 +1561,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v5.6.1",
+            "version": "v5.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "a59a13791077fe3d44f90e7133eb68e7d22eaff2"
+                "reference": "24ac4c74f91ee2c193fa1aaa5c249cb0822809af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/a59a13791077fe3d44f90e7133eb68e7d22eaff2",
-                "reference": "a59a13791077fe3d44f90e7133eb68e7d22eaff2",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/24ac4c74f91ee2c193fa1aaa5c249cb0822809af",
+                "reference": "24ac4c74f91ee2c193fa1aaa5c249cb0822809af",
                 "shasum": ""
             },
             "require": {
@@ -1631,7 +1629,7 @@
             ],
             "support": {
                 "issues": "https://github.com/vlucas/phpdotenv/issues",
-                "source": "https://github.com/vlucas/phpdotenv/tree/v5.6.1"
+                "source": "https://github.com/vlucas/phpdotenv/tree/v5.6.2"
             },
             "funding": [
                 {
@@ -1643,7 +1641,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-20T21:52:34+00:00"
+            "time": "2025-04-30T23:37:27+00:00"
         }
     ],
     "packages-dev": [],

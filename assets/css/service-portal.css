@@ -91,17 +91,10 @@ li.sidebar-nav-item:hover {
 }
 
 .card {
-  width: 100%;
-  height: 90%;
-  max-width: 350px;
-  min-height: 620px;
-  border-radius: 30px;
-  padding: 15px 5px 15px 5px;
-  background-color: #f2f2f2;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+    height: 520px; 
+    width: 300px; 
+    margin: 10px;
+    border-radius: 20px;
 }
 
 .card-body {
@@ -131,8 +124,14 @@ li.sidebar-nav-item:hover {
 }
 
 .card-text {
-  overflow: hidden;
-  max-height: 125px;
+    max-height: 85px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    line-height: 1.5; 
+    word-wrap: break-word;
 }
 
 @media (max-width: 1500px) {
@@ -144,8 +143,9 @@ li.sidebar-nav-item:hover {
 }
 
 .card-img-top {
-  object-fit: contain;
-  height: 300px;
+  height: 300px; 
+  object-fit: cover; 
+  border-radius: 10px;
 }
 
 .card-shadow {
@@ -225,10 +225,46 @@ li.sidebar-nav-item:hover {
   transform: scale(1.1);
 }
 
+#modalDescription {
+  text-align: left;
+  line-height: 1.6;
+  font-size: 1rem; 
+  margin-top: 10px;
+}
+
+#modalDescription ul {
+  padding-left: 20px;
+}
+
+#modalDescription li {
+  margin-bottom: 5px; 
+}
+
+#modalImage {
+  width: 100%;
+  max-height: 300px; 
+  object-fit: cover;
+  border-radius: 10px; 
+}
+
 /* Custom Styles for Pub-Mats */
 .my-3 {
   margin-top: 1rem !important;
   margin-bottom: 1rem !important;
+}
+
+.pb-card-text {
+  max-height: 500px;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  line-height: 1.5; 
+  word-wrap: break-word;
+}
+
+.pb-card-body {
+  max-height: 500px;
 }
 
 .pb-card-modules {
@@ -239,10 +275,11 @@ li.sidebar-nav-item:hover {
 }
 
 .pb-img {
-  object-fit: contain;
-  height: 80%;
-  border-radius: 20px;
-  margin: 5px;
+  object-fit: cover; 
+  height: 320px;
+  width: 100%; 
+  border-radius: 10px; 
+  background-color: #f2f2f2; 
 }
 
 .nav-item.sidebar-nav-item.active {
@@ -463,7 +500,7 @@ option {
   border: none;
 }
 
-.va_submit-btn:hover {
+.va_submit_btn:hover {
   background-color: #007bff;
   color: white;
 }
@@ -514,7 +551,7 @@ option {
   cursor: pointer;
 }
 
-.va_custom-radio::before {
+.va_custom_radio::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -527,23 +564,23 @@ option {
   transition: background-color 0.2s ease;
 }
 
-.va_custom-radio.sd:checked::before {
+.va_custom_radio.sd:checked::before {
   background-color: #283747;
 }
 
-.va_custom-radio.d:checked::before {
+.va_custom_radio.d:checked::before {
   background-color: #707b7c;
 }
 
-.va_custom-radio.n:checked::before {
+.va_custom_radio.n:checked::before {
   background-color: #aab7b8;
 }
 
-.va_custom-radio.a:checked::before {
+.va_custom_radio.a:checked::before {
   background-color: #707b7c;
 }
 
-.va_custom-radio.sa:checked::before {
+.va_custom_radio.sa:checked::before {
   background-color: #283747;
 }
 /* END of Custom styles for View-Assessments  */
@@ -553,4 +590,10 @@ option {
   background-color: transparent;
   color: inherit;
   padding: 0;
+}
+
+.no-scroll {
+    white-space: pre-wrap; /* Preserve line breaks and spaces */
+    overflow: hidden; /* Disable scrolling */
+    word-wrap: break-word; /* Ensure long words break properly */
 }

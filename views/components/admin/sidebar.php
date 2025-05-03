@@ -12,21 +12,21 @@
                     <li class="fw-bold nav-link-title">User Accounts</li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2 d-flex align-items-center gap-2">
                         <i class="bi bi-person-fill"></i>
-                        <a class="nav-link active" aria-current="page" href="">Student Acccounts</a>
+                        <a class="nav-link active" aria-current="page" href="../admin/student-accounts.php">Student Acccounts</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-person-heart"></i>
-                        <a class="nav-link active" aria-current="page" href="">Counselor Accounts</a>
+                        <a class="nav-link active" aria-current="page" href="../admin/counselor-accounts.php">Counselor Accounts</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-person-fill-gear"></i>
-                        <a class="nav-link active" aria-current="page" href="">Admin Accounts</a>
+                        <a class="nav-link active" aria-current="page" href="../admin/admin-accounts.php">Admin Accounts</a>
                     </li>
                     <li class="my-1"><hr /></li>
                     <li class="fw-bold nav-link-title">Account</li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-person-circle"></i>
-                        <a class="nav-link active" aria-current="page" href="">Profile</a>
+                        <a class="nav-link active" aria-current="page" href="../admin/profile.php">Profile</a>
                     </li>
                     <li class="py-2 nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-power"></i>
