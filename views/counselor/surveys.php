@@ -43,10 +43,6 @@
     <button class="btn btn-surveys_c btn-primary" data-bs-toggle="modal" data-bs-target="#addNewModal">
       <i class="bi"></i> <span class="fw-bold">View Survey</span>
     </button>
-
-    <button class="btn btn-warning fw-semibold" data-bs-toggle="modal" data-bs-target="#">
-    <i class="bi bi-bar-chart-fill"></i> View Analytics
-    </button>
   </div>
 </div>
 
@@ -64,7 +60,7 @@
         </tr>
       </thead>
       <tbody id="surveyTableBody">
-        <tr>
+        <!-- <tr>
           <td class="text-truncate column-surveys_c text-center align-middle">1.</td>
           <td class="align-middle">Lorem ipsum dolor sit amet, conse...</td>
           <td class="align-middle">Dec 9, 2024</td>
@@ -73,7 +69,7 @@
               View Response
             </button>
           </td>
-        </tr>
+        </tr> -->
       </tbody>
     </table>
   </div>
@@ -283,12 +279,12 @@
     <script>
   const tbody = document.getElementById('surveyTableBody');
 
-  for (let i = 1; i < 12; i++) {
+  for (let i = 0; i < 1; i++) {
     const row = `
       <tr>
-          <td class="text-truncate column-surveys_c text-center align-middle">${i + 1}.</td>
-          <td class="align-middle">Lorem ipsum dolor sit amet, conse...</td>
-          <td class="align-middle">Dec 9, 2024</td>
+          <td class="text-truncate column-surveys_c text-center align-middle">${i + 1}</td>
+          <td class="align-middle">QCU Guidance and Counseling Office Services Survey</td>
+          <td class="align-middle"> <?php echo date("M j, Y"); ?></td>
           <td class="d-flex justify-content-center align-items-center">
           <button class="btn btn-viewsurvey_c btn-sm" data-bs-toggle="modal" data-bs-target="#surveyModal">
           View Response
