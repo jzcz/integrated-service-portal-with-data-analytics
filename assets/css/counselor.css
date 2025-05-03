@@ -707,6 +707,11 @@ input.vs_custom-radio.sa:checked + .vscustom-circle_c {
   border-radius: 0.5rem;
 }
 
+.body_ac {
+  max-height: calc(100vh - 230px); 
+  overflow-y: auto;
+}
+
 .viewsurvey-questions_c {
   background-color: #ffffff;
   border: 1px solid #dee2e6;
@@ -752,12 +757,17 @@ input.vs_custom-radio.sa:checked + .vscustom-circle_c {
   justify-content: center;
 }
 
+.no-scroll {
+    white-space: pre-wrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    word-wrap: break-word; 
+}
+.bg-secondary-subtle {
+  background-color: #ffffff !important; /* Change to white or any preferred color */
+}
+
 /* End of Custom styles for counselor assessments */
 
-/* Custom styles to disable scrolling and ensure text wraps properly */
-.no-scroll {
-    white-space: pre-wrap; /* Preserve line breaks and spaces */
-    overflow: hidden; /* Disable scrolling */
-    text-overflow: ellipsis; /* Optional: Add ellipsis for overflowed text */
-    word-wrap: break-word; /* Ensure long words break properly */
-}
+
+
