@@ -43,7 +43,7 @@
                 </li>
                 <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                     <i class="bi bi-ui-radios-grid"></i>
-                    <a class="nav-link active" aria-current="page" href="../service-portal/student-survey.php">Surveys</a>
+                    <a class="nav-link active" aria-current="page" href="../service-portal/survey.php">Surveys</a>
                 </li>
                 <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                     <i class="bi bi-file-earmark-fill"></i>
