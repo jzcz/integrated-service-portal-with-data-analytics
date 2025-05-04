@@ -1,19 +1,142 @@
-<?php 
-    session_start();
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-    require(__DIR__ . "/../../queries/students.php");
-    include(__DIR__ . "/../../config/utils.php");
-    
-    // check session first exists first
-    if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
-      header("location: ../service-portal/login.php");
-      exit();
+session_start();
+
+if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+  header("location: ../service-portal/login.php");
+  exit();
+}
+
+require(__DIR__ . "/../../queries/students.php");
+include(__DIR__ . "/../../config/utils.php");
+
+// Include the database connection
+$db_conn = require(__DIR__ . "/../../db/db_conn.php");
+
+if (!$db_conn) {
+    die("Database connection failed: " . mysqli_connect_error());
+}
+
+// Retrieve student ID from session
+$studentId = $_SESSION['student_id'] ?? null;
+
+$student = null; // Ensure $student is always defined
+if ($studentId) {
+    // Fetch student profile from the database
+    $stmt = $db_conn->prepare("SELECT * FROM appt_attendee WHERE student_id = ?");
+    $stmt->bind_param("i", $studentId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $student = $result->fetch_assoc();
+    $stmt->close();
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $lastname = $_POST['lastname'] ?? $student['last_name'] ?? '';
+    $firstname = $_POST['firstname'] ?? $student['first_name'] ?? '';
+    $middlename = $_POST['middlename'] ?? $student['middle_name'] ?? '';
+    $suffix = $_POST['suffix'] ?? $student['suffix'] ?? null;
+    $studentNo = $_POST['student_no'] ?? $student['student_no'] ?? '';
+    $programId = $_POST['course'] ?? $student['program_id'] ?? null; // Fixed dropdown name
+    $currentYearLevel = $_POST['year'] ?? $student['current_year_level'] ?? ''; // Fixed dropdown name
+    $gender = $_POST['gender'] ?? $student['gender'] ?? '';
+    $personalContactNo = $_POST['personal-contact-no'] ?? $student['personal_contact_no'] ?? '';
+    $studentEmail = $_POST['qcu-email'] ?? $student['student_email'] ?? '';
+    $guardianName = $_POST["guardian's-name"] ?? $student['guardian_name'] ?? '';
+    $guardianContactNo = $_POST['guardian-contact-no'] ?? $student['guardian_contact_no'] ?? '';
+    $preferredDay = $_POST['preferred_day'] ?? ''; // Fixed dropdown name
+    $preferredTime = $_POST['preferred_time'] ?? ''; // Fixed dropdown name
+    $counselingConcern = $_POST['counseling_concern'] ?? '';
+    $addConcernInfo = $_POST['add_concern_info'] ?? '';
+    $status = "Pending";
+    $apptReqType = "Online";
+    $agreeTerms = 1;
+    $agreePrivacy = 1;
+    $agreeLimits = 1;
+    $studentId = $studentId ?? null; // Ensure $studentId is defined and matches the placeholder
+
+    // Check if attendee already exists
+    if (!$student) {
+        // Insert new attendee if not found
+        $stmt_attendee = $db_conn->prepare("INSERT INTO appt_attendee (
+            first_name, last_name, middle_name, suffix, student_no, program_id, current_year_level,
+            gender, personal_contact_no, student_email, guardian_name, guardian_contact_no
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        if (!$stmt_attendee) {
+            error_log("Prepare failed for appt_attendee: " . $db_conn->error);
+            die("Prepare failed for appt_attendee: " . $db_conn->error);
+        }
+
+        $stmt_attendee->bind_param(
+            "ssssissssssi",
+            $firstname, $lastname, $middlename, $suffix, $studentNo, $programId, $currentYearLevel,
+            $gender, $personalContactNo, $studentEmail, $guardianName, $guardianContactNo
+        );
+
+        if (!$stmt_attendee->execute()) {
+            error_log("Error inserting attendee: " . $stmt_attendee->error);
+            echo "Error inserting attendee: " . $stmt_attendee->error;
+            exit();
+        }
+
+        // Get the last inserted ID from appt_attendee
+        $attendeeId = $db_conn->insert_id;
+        $stmt_attendee->close();
+    } else {
+        // Use existing attendee ID
+        $attendeeId = $student['attendee_id'];
     }
 
-    $db_conn = include(__DIR__ . "/../../db/db_conn.php");
-    $currentStudent = $_SESSION['studentId'];
-    
+    // Debug attendee ID
+    error_log("Attendee ID: " . $attendeeId);
+
+    // Insert appointment details into the appointments table
+    $stmt_appointment = $db_conn->prepare("INSERT INTO appointments (
+        attendee_id, preferred_day, preferred_time, counseling_concern, add_concern_info, status,
+        appt_req_type, agreedToTermsAndConditions, agreedToDataPrivacyPolicy, agreedToLimitations, appt_date
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    if (!$stmt_appointment) {
+        error_log("Prepare failed for appointments: " . $db_conn->error);
+        die("Prepare failed for appointments: " . $db_conn->error);
+    }
+
+    $apptDate = date("Y-m-d H:i:s");
+
+    $stmt_appointment->bind_param(
+        "issssssiiis",
+        $attendeeId, $preferredDay, $preferredTime, $counselingConcern, $addConcernInfo, $status,
+        $apptReqType, $agreeTerms, $agreePrivacy, $agreeLimits, $apptDate
+    );
+
+    if ($stmt_appointment->execute()) {
+        // Trigger modal via JS
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var successModal = new bootstrap.Modal(document.getElementById('yourSuccessModalId'));
+                successModal.show();
+            });
+
+            // Reset form fields for counseling_concern, preferred_time, and preferred_day
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('counseling_concern').selectedIndex = 0;
+                document.getElementById('preferred_time').selectedIndex = 0;
+                document.getElementById('preferred_day').selectedIndex = 0;
+            });
+        </script>";
+    }
+
+    $stmt_appointment->close();
+}
+
+$db_conn->close();
 ?>
+   
+   
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -68,93 +191,109 @@
       <div class="appoint-form-container">
       <h1>PERSONAL INFORMATION</h1>
       <br>
-        <form>
+        <form action="" method="POST">
             <div class="appoint-input-group">
                 <label for="lastname">Full Name (Last Name, First Name, Middle Initial)</label>
                 <div class="appoint-seperate-inputs">
-                    <input type="text" id="lastname" name="lastname" placeholder="Last Name">
-                    <input type="text" id="firstname" name="firstname" placeholder="First Name">
-                    <input type="text" id="mi" name="middleinitial" placeholder="Middle Name">
+                <input type="text" id="lastname" name="lastname" value="<?= isset($student['last_name']) ? htmlspecialchars($student['last_name']) : '' ?>" placeholder="Last Name">
+                <input type="text" id="firstname" name="firstname" value="<?= isset($student['first_name']) ? htmlspecialchars($student['first_name']) : '' ?>" placeholder="First Name">
+                <input type="text" id="mi" name="middlename" value="<?= isset($student['middle_name']) ? htmlspecialchars($student['middle_name']) : '' ?>" placeholder="Middle Name">
             </div>
 
-  
-                <div class="appoint-input-group">
-                <label for="course/yr/sec">Course/Year/Section</label>
-                <div class="appoint-seperate-inputs">
-                    <input type="text" id="course" name="course" placeholder="Course">
-                    <input type="text" id="year" name="year" placeholder="Year">
-                    <input type="text" id="section" name="section" placeholder="Section">
-            </div>
+          <!-- filepath: c:\xampp\htdocs\integrated-service-portal-with-data-analytics\views\service-portal\appointments.php -->
+<div class="appoint-input-group">
+    <label for="course/yr/sec">Course/Year/Section</label>
+    <div class="appoint-seperate-inputs">
+        <!-- Dropdown for Course -->
+        <select id="course" name="course" class="form-select">
+            <option value="" disabled selected>Please Select Course</option>
+            <option value="1">Bachelor of Science in Accountancy (BSA)</option>
+            <option value="2">Bachelor of Science in Management Accounting (BSMA)</option>
+            <option value="3">Bachelor of Science in Information Technology (BSIT)</option>
+            <option value="4">Bachelor of Science in Entrepreneurship (BSENT)</option>
+            <option value="5">Bachelor of Science in Electronics Engineering (BSEcE)</option>
+            <option value="6">Bachelor of Science in Industrial Engineering (BSIE)</option>
+            <option value="7">Bachelor of Early Childhood Education (BECED)</option>
+            <option value="8">Bachelor of Science in Information Systems (BSIS)</option>
+            <option value="9">Bachelor of Science in Computer Science (BSCS)</option>
+            <option value="10">Bachelor of Science in Computer Engineering (BSCpE)</option>
+        </select>
+
+        <!-- Dropdown for Year -->
+        <select id="year" name="year" class="form-select">
+            <option value="" disabled selected>Please Select Year</option>
+            <option value="1st">1st Year</option>
+            <option value="2nd">2nd Year</option>
+            <option value="3rd">3rd Year</option>
+            <option value="4th">4th Year</option>
+        </select>
+    </div>
+</div>
 
                 <div class="appoint-input-group">
                     <label for="personal-contact-no">Personal Contact Number</label>
-                    <input type="text" value="<?php echo $student['first_name']?>" id="personal-contact-no" name="personal-contact-no" placeholder="+63 000 000 0000">
+                    <input type="text" id="personal-contact-no" name="personal-contact-no" value="<?= isset($student['personal_contact_no']) ? htmlspecialchars($student['personal_contact_no']) : '' ?>" placeholder="+63 000 000 0000">
                 </div>
         
 
             <div class="appoint-input-group">
                 <label for="qcu-email">QCU Email Address</label>
-                <input type="text" id="qcu-email" name="qcu-email" placeholder="example@example.com">
+                <input type="text" id="qcu-email" name="qcu-email" value="<?= isset($student['qcu_email']) ? htmlspecialchars($student['qcu_email']) : '' ?>" placeholder="example@example.com">
             </div>
             <div class="appoint-row-group">
                 <div class="appoint-input-group">
                     <label for="guardian's-name">Guardian's Name</label>
                     <div class="multi-input-group">
-                    <input type="text" id="guardian's-name" name="guardian's-name" placeholder="Guardian's Full Name">
+                    <input type="text" id="guardian's-name" name="guardian's-name" value="<?= isset($student['guardian_name']) ? htmlspecialchars($student['guardian_name']) : '' ?>" placeholder="Guardian's Full Name">
                     </div>
                 </div>
 
                 <div class="appoint-input-group">
                     <label for="guardian-contact-no">Guardian's Contact Number</label>
-                    <input type="text" id="guardian-contact-no" name="guardian-contact-no" placeholder="+63 000 000 0000">
+                    <input type="text" id="guardian-contact-no" name="guardian-contact-no" value="<?= isset($student['guardian_contact_no']) ? htmlspecialchars($student['guardian_contact_no']) : '' ?>" placeholder="+63 000 000 0000">
+
                 </div>
             </div>
 
 
             <h1>COUNCELING SESSION</h1>
             
-            <div class="appoint-input-group">
-  <div class="appoint-dropdown">
-    <label for="coun-concern">Counseling Concern</label>
-    <button class="appoint-dropdown-btn" type="button">Please Select</button>
-    <ul class="appoint-dropdown-menu">
-      <li><a class="appoint-dropdown-item" href="#">Career</a></li>
-      <li><a class="appoint-dropdown-item" href="#">Academic</a></li>
-      <li><a class="appoint-dropdown-item" href="#">Personal</a></li>
-    </ul>
-  </div>
+<div class="appoint-input-group">
+    <label for="counseling_concern">Counseling Concern</label>
+    <select id="counseling_concern" name="counseling_concern" class="form-select">
+        <option value="" disabled selected>Please Select</option>
+        <option value="Career" <?= isset($_POST['counseling_concern']) && $_POST['counseling_concern'] === 'Career' ? 'selected' : '' ?>>Career</option>
+        <option value="Academic" <?= isset($_POST['counseling_concern']) && $_POST['counseling_concern'] === 'Academic' ? 'selected' : '' ?>>Academic</option>
+        <option value="Personal" <?= isset($_POST['counseling_concern']) && $_POST['counseling_concern'] === 'Personal' ? 'selected' : '' ?>>Personal</option>
+    </select>
 </div>
 
 <div class="appoint-input-group">
-                <label for="concern">Brief Information About Your Concern</label>
-                <input type="text" id="brief-info" name="bried-info" placeholder="Your Answer">
-
-          
- <div class="appoint-input-group">
-  <div class="appoint-dropdown">
-    <label for="time">Preferred Time of Counseling Schedule</label>
-    <button class="appoint-dropdown-btn" type="button">Please Select</button>
-    <ul class="appoint-dropdown-menu">
-      <li><a class="appoint-dropdown-item" href="#">9:00 AM - 10:00 AM</a></li>
-      <li><a class="appoint-dropdown-item" href="#">11:00 AM - 12:00 NN</a></li>
-      <li><a class="appoint-dropdown-item" href="#">1:00 PM - 2:00 PM</a></li>
-      <li><a class="appoint-dropdown-item" href="#">3:00 PM - 4:00 PM</a></li>
-    </ul>
-  </div>
+    <label for="concern">Brief Information About Your Concern</label>
+    <input type="text" id="brief-info" name="add_concern_info" placeholder="Your Answer">
 </div>
 
 <div class="appoint-input-group">
-  <div class="appoint-dropdown">
-    <label for="day">Preferred Day of Counseling Schedule</label>
-    <button class="appoint-dropdown-btn" type="button">Please Select</button>
-    <ul class="appoint-dropdown-menu">
-      <li><a class="appoint-dropdown-item" href="#">Monday</a></li>
-      <li><a class="appoint-dropdown-item" href="#">Tuesday</a></li>
-      <li><a class="appoint-dropdown-item" href="#">Wednesday</a></li>
-      <li><a class="appoint-dropdown-item" href="#">Thursday</a></li>
-      <li><a class="appoint-dropdown-item" href="#">Friday</a></li>
-    </ul>
-  </div>
+    <label for="preferred_time">Preferred Time</label>
+    <select id="preferred_time" name="preferred_time" class="form-select">
+        <option value="" disabled selected>Please Select</option>
+        <option value="9:00 AM to 10:00 AM" <?= isset($_POST['preferred_time']) && $_POST['preferred_time'] === '9:00 AM to 10:00 AM' ? 'selected' : '' ?>>9:00 AM - 10:00 AM</option>
+        <option value="11:00 AM to 12:00 NN" <?= isset($_POST['preferred_time']) && $_POST['preferred_time'] === '11:00 AM to 12:00 NN' ? 'selected' : '' ?>>11:00 AM - 12:00 NN</option>
+        <option value="1:00 PM to 2:00 PM" <?= isset($_POST['preferred_time']) && $_POST['preferred_time'] === '1:00 PM to 2:00 PM' ? 'selected' : '' ?>>1:00 PM - 2:00 PM</option>
+        <option value="3:00 PM to 4:00 PM" <?= isset($_POST['preferred_time']) && $_POST['preferred_time'] === '3:00 PM to 4:00 PM' ? 'selected' : '' ?>>3:00 PM - 4:00 PM</option>
+    </select>
+</div>
+
+<div class="appoint-input-group">
+    <label for="preferred_day">Preferred Day</label>
+    <select id="preferred_day" name="preferred_day" class="form-select">
+        <option value="" disabled selected>Please Select</option>
+        <option value="Monday" <?= isset($_POST['preferred_day']) && $_POST['preferred_day'] === 'Monday' ? 'selected' : '' ?>>Monday</option>
+        <option value="Tuesday" <?= isset($_POST['preferred_day']) && $_POST['preferred_day'] === 'Tuesday' ? 'selected' : '' ?>>Tuesday</option>
+        <option value="Wednesday" <?= isset($_POST['preferred_day']) && $_POST['preferred_day'] === 'Wednesday' ? 'selected' : '' ?>>Wednesday</option>
+        <option value="Thursday" <?= isset($_POST['preferred_day']) && $_POST['preferred_day'] === 'Thursday' ? 'selected' : '' ?>>Thursday</option>
+        <option value="Friday" <?= isset($_POST['preferred_day']) && $_POST['preferred_day'] === 'Friday' ? 'selected' : '' ?>>Friday</option>
+    </select>
 </div>
  
 <br>
@@ -227,10 +366,12 @@
           please visit the 'Schedule Appointments' section.
     </div>
     <div class="appoint-modal-footer">
-      <button type="button" class="btn appoint-btn-secondary" id="appointcloseSuccessModal">Okay</button>
+      <button type="submit" class="btn appoint-btn-secondary" id="appointcloseSuccessModal">Okay</button>
     </div>
+</form> <!-- Moved the closing form tag here -->
   </div>
 </div>
+            
 
 
 <footer class="appoint-footer">
@@ -268,17 +409,31 @@ document.getElementById('appointcloseSuccessModal').addEventListener('click', fu
   document.getElementById('appointsuccessModal').style.display = 'none';
 });
 
-appointtermsModal.addEventListener('click', function (event) {
-      if (event.target === appointtermsModal)
-       {
-        appointtermsModal.style.display = 'none';
-      }
-    });
-    appointsuccessModal.addEventListener('click', function (event) {
-      if (event.target === appointsuccessModal)
-       {
-        appointsuccessModal.style.display = 'none';
-      }
+
+  
+    
+
+
+document.getElementById('course').addEventListener('change', function() {
+    const yearDropdown = document.getElementById('year');
+    const selectedCourse = this.value;
+
+    // Clear existing options in the year dropdown
+    yearDropdown.innerHTML = '<option value="" disabled selected>Please Select Year</option>';
+
+    // Populate year options based on the selected course
+    if (selectedCourse === '4') { // Bachelor of Science in Entrepreneurship (BSENT)
+        yearDropdown.innerHTML += '<option value="1st">1st Year</option>';
+        yearDropdown.innerHTML += '<option value="2nd">2nd Year</option>';
+        yearDropdown.innerHTML += '<option value="3rd">3rd Year</option>';
+    } else {
+        yearDropdown.innerHTML += '<option value="1st">1st Year</option>';
+        yearDropdown.innerHTML += '<option value="2nd">2nd Year</option>';
+        yearDropdown.innerHTML += '<option value="3rd">3rd Year</option>';
+        yearDropdown.innerHTML += '<option value="4th">4th Year</option>';
+    }
+
+
     });
 
 </script>
@@ -301,4 +456,4 @@ appointtermsModal.addEventListener('click', function (event) {
 </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
  </body>
-</html>     
+</html>

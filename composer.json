@@ -7,7 +7,9 @@
         "fakerphp/faker": "^1.24",
         "hidehalo/nanoid-php": "^2.0",
         "phpmailer/phpmailer": "^6.10",
-        "cloudinary/cloudinary_php": "^3.1"
+        "cloudinary/cloudinary_php": "^3.1",
+        "php": "^8.0", 
+        "ext-mbstring": "*"
     },
     "scripts": {
         "seed-db": ""

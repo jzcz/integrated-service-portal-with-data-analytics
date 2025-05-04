@@ -6,10 +6,11 @@
     include(__DIR__ . "/../../config/utils.php");
     
     // check session first exists first
-    // if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
-    //     header("location: ../public/counselor-admin-login-page.php");
-    //     exit();
-    // }
+    if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+        header("location: ../public/counselor-admin-login-page.php");
+        exit();
+    }
+
     $currentYear = date('Y');
     $previousYear = $currentYear - 1;
 
@@ -213,6 +214,8 @@
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
     <script>
         const getCurrentYear = () => {
             const date = new Date();
@@ -471,5 +474,6 @@
 
         const programBarChart = new Chart(programCtx, programBarConfig);
     </script>
+    
 </body>
 </html>

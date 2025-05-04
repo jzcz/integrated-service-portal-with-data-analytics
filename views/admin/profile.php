@@ -4,25 +4,25 @@
     include(__DIR__ . "/../../config/utils.php");
     
     // check session first exists first
-    if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+    if (!isset($_SESSION['adminId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Admin') {
       header("location: ../public/counselor-admin-login-page.php");
       exit();
     }
 
     $db_conn = require( __DIR__ . "/../../db/db_conn.php");
 
-    $counselorId = $_SESSION['counselorId'];
+    $adminId = $_SESSION['adminId'];
 
-    function getCounselorProfile($db_conn, $counselorId) {
-        $sql = "SELECT * FROM counselors JOIN user ON counselors.user_id = user.user_id WHERE counselor_id = ?;";
+    function getAdminProfile($db_conn, $adminId) {
+        $sql = "SELECT * FROM admin JOIN user ON admin.user_id = user.user_id WHERE admin_id = ?;";
         $stmt = $db_conn->prepare($sql);
-        $stmt->bind_param("i", $counselorId);
+        $stmt->bind_param("i", $adminId);
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
 
-    $counselorProfile = getCounselorProfile($db_conn, $counselorId);
+    $adminProfile = getAdminProfile($db_conn, $adminId);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,15 +40,15 @@
 </head>
 <body>
     <?php 
-        include(__DIR__ . '/../components/counselor/sidebar.php');
+        include(__DIR__ . '/../components/admin/sidebar.php');
     ?>
     <main>
   <div class="container  d-flex flex-column align-items-center">
-    <h2 class="text-primary-emphasis text-center pt-5 mb-3 counselor-profile-header"><b>COUNSELOR'S PROFILE</b></h2>
+    <h2 class="text-primary-emphasis text-center pt-5 mb-3 counselor-profile-header"><b>ADMIN'S PROFILE</b></h2>
     <div class="text-center mb-3">
       <img src="../../static/profile1.png" alt="Profile Icon" width="150" height="150">
-      <h3 class="pt-3"><?php echo $counselorProfile['first_name'] . ' ' . $counselorProfile['last_name']; ?></h3>
-      <p class="text-muted"><?php echo $counselorProfile['role']; ?></p>
+      <h3 class="pt-3"><?php echo $adminProfile['first_name'] . ' ' . $adminProfile['last_name']; ?></h3>
+      <p class="text-muted"><?php echo $adminProfile['role']; ?></p>
     </div>
     <div class="card bg-white counselor-details-card" style="max-width: 500px; min-height: 200px; border-radius: 0; margin-bottom: 16rem;">
      <div class="card-body py-2 px-3">  
@@ -56,13 +56,13 @@
          <div class="row gx-1 align-items-center">
            <label for="counselorEmployeeID" class="col-md-5 col-form-label fw-bold smaller">EMPLOYEE ID</label>
            <div class="col-md-7 text-end">
-             <input type="text" class="form-control-plaintext smaller text-end" id="counselorEmployeeID" value="<?php echo $counselorProfile['employee_id']; ?>" readonly>
+             <input type="text" class="form-control-plaintext smaller text-end" id="counselorEmployeeID" value="<?php echo $adminProfile['employee_id']; ?>" readonly>
            </div>
          </div>
          <div class="row gx-1 align-items-center">
            <label for="counselorQcuEmail" class="col-md-5 col-form-label fw-bold smaller">QCU Email</label>
            <div class="col-md-7 text-end">
-             <input type="email" class="form-control-plaintext smaller text-end" id="counselorQcuEmail" value="<?php echo $counselorProfile['email']; ?>" readonly>
+             <input type="email" class="form-control-plaintext smaller text-end" id="counselorQcuEmail" value="<?php echo $adminProfile['email']; ?>" readonly>
            </div>
          </div>
          <div class="row gx-1 align-items-center">

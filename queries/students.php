@@ -115,4 +115,14 @@
                             $semester, $reasonDesc, $specifyReason, $proofImgUrl, $contactNo, $email);
         return $stmt->execute();
     }
+
+    function getStudentByEmail($db_conn, $email) {
+        $qry = "SELECT * FROM user WHERE email = ? AND role = 'Student';";
+        $stmt = $db_conn->prepare($qry);
+        $stmt->bind_param("s", $email);
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
 ?>
