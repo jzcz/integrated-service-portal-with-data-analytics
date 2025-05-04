@@ -314,6 +314,8 @@
                             }
                         }
                         $(editModal).modal('hide');
+                        window.location.reload(true);
+                        return false;
                     } else {
                         alert(data.message);
                     }
@@ -348,6 +350,8 @@
                                 cardToRemove.remove();
                             }
                             deleteConfirmationModal.hide();
+                            window.location.reload(true);
+                            return false;
                         } else {
                             alert(data.message);
                         }

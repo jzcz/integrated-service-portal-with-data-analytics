@@ -40,7 +40,7 @@
 </head>
 <body>
     <?php 
-        include(__DIR__ . '/../components/counselor/sidebar.php');
+        include(__DIR__ . '/../components/admin/sidebar.php');
     ?>
     <main>
   <div class="container  d-flex flex-column align-items-center">
