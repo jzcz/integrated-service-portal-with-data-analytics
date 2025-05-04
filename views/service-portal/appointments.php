@@ -1,7 +1,13 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 session_start();
+
+if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+  header("location: ../service-portal/login.php");
+  exit();
+}
 
 require(__DIR__ . "/../../queries/students.php");
 include(__DIR__ . "/../../config/utils.php");

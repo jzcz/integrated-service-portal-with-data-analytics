@@ -1,5 +1,11 @@
 <?php 
     session_start();
+
+    if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+        header("location: ../service-portal/login.php");
+        exit();
+    }
+    
     $db_conn = require( __DIR__ . "/../../db/db_conn.php");
 
     $err = null;

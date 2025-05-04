@@ -1,6 +1,12 @@
 <?php
     session_start();
 
+        // check session first exists first
+    if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
+        header("location: ../public/counselor-admin-login-page.php");
+        exit();
+    }
+    
     include(__DIR__ . "/../../config/utils.php");
     $db_conn = require(__DIR__ . "/../../db/db_conn.php");
 
@@ -11,12 +17,6 @@
     if (!$result) {
         error_log("Error executing announcement query: " . $db_conn->error);
         // Optionally display an error message to the user if needed
-    }
-
-    // check session first exists first
-    if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
-        header("location: ../public/counselor-admin-login-page.php");
-        exit();
     }
 
     $success = "";

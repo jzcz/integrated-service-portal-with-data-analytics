@@ -1,7 +1,7 @@
 <?php
 session_start();
 $db_conn = require(__DIR__ . "/../db/db_conn.php");
-require_once("C:/xampp/htdocs/integrated-service-portal-with-data-analytics/config/config.php");
+require_once(__DIR__ . "/../config/config.php");
 include(__DIR__ . "/../config/utils.php");
 require_once(__DIR__ . "/../db/media_store.php");
 
