@@ -3,7 +3,7 @@ session_start();
 
 include(__DIR__ . "/../../config/utils.php");
 
-if (!isset($_SESSION['studentId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Student') {
+if (!isset($_SESSION['counselorId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Counselor') {
   header("location: ../service-portal/login.php");
   exit();
 }
@@ -184,7 +184,6 @@ $programs = $db->getPrograms();
       <option value="" disabled selected>Select gender...</option>
       <option value="Male">Male</option>
       <option value="Female">Female</option>
-      <option value="Other">Other</option>
     </select>
   </div>
 
