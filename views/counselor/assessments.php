@@ -160,6 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
         }
 
+        
+
         // Commit transaction
         $db_conn->commit();
 
@@ -171,6 +173,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $db_conn->rollback();
         die("Error adding assessment: " . $e->getMessage());
     }
+}
+
+// Handle form submission for fetching responses
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'fetch_responses') {
+    $assessmentId = $db_conn->real_escape_string($_POST['assessment_id']);
+
+    // Fetch responses for the given assessment ID
+    $sql = "
+        SELECT 
+            assessment_response_id, 
+            assessment_id, 
+            student_id, 
+            created_at AS date_submitted
+        FROM assessment_responses
+        WHERE assessment_id = '$assessmentId'
+    ";
+    $result = $db_conn->query($sql);
+
+    if ($result && $result->num_rows > 0) {
+        $responses = [];
+        while ($row = $result->fetch_assoc()) {
+            $responses[] = $row;
+        }
+        echo json_encode($responses);
+    } else {
+        echo json_encode([]);
+    }
+    exit();
+}
+
+// Handle form submission for fetching response details
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'fetch_response_details') {
+    $responseId = $db_conn->real_escape_string($_POST['response_id']);
+
+    $sql = "
+        SELECT 
+            ar.assessment_response_id,
+            a.assessment_title,
+            a.assessment_desc,
+            q.assessment_question_id,
+            q.question_title,
+            q.question_text,
+            o.option_text AS selected_option
+        FROM assessment_responses ar
+        JOIN assessments a ON ar.assessment_id = a.assessment_id
+        JOIN assessment_answers ans ON ar.assessment_response_id = ans.assessment_response_id
+        JOIN assessment_questions q ON ans.assessment_question_id = q.assessment_question_id
+        LEFT JOIN assessment_options o ON ans.assessment_option_id = o.assessment_option_id -- Corrected column name
+        WHERE ar.assessment_response_id = '$responseId'
+    ";
+    $result = $db_conn->query($sql);
+
+    if (!$result) {
+        echo json_encode(['success' => false, 'error' => 'Query failed: ' . $db_conn->error]);
+        exit();
+    }
+
+    if ($result->num_rows > 0) {
+        $responseDetails = [];
+        while ($row = $result->fetch_assoc()) {
+            $responseDetails[] = [
+                'assessment_title' => $row['assessment_title'],
+                'assessment_desc' => $row['assessment_desc'],
+                'question_title' => $row['question_title'],
+                'question_text' => $row['question_text'],
+                'selected_option' => $row['selected_option']
+            ];
+        }
+        echo json_encode(['success' => true, 'response_details' => $responseDetails]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'No data found for response ID: ' . $responseId]);
+    }
+    exit();
 }
 
 // Close the database connection
@@ -328,11 +403,11 @@ $db_conn->close();
           <table class="table table-bordered table-hover">
             <thead class="table-light">
               <tr>
-                <th>Respondent</th>
+                <th>Response ID</th>
+                <th>Assessment ID</th>
                 <th>Student ID</th>
-                <th>Program</th>
-                <th>Current Year Level</th>
                 <th>Date Submitted</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="responseTableBody">
@@ -415,6 +490,30 @@ $db_conn->close();
           <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Cancel</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+<!-- View Response Modal -->
+<div class="modal fade" id="viewResponseModal" tabindex="-1" aria-labelledby="viewResponseModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header text-center d-flex flex-column" style="background-color: #0E58A3; color: #fff;">
+        <h5 class="modal-title" id="viewResponseModalLabel">Response Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6 class="fw-bold text-primary">Assessment Title:</h6>
+        <p id="responseAssessmentTitle" class="text-secondary"></p>
+        <h6 class="fw-bold text-primary">Description:</h6>
+        <p id="responseAssessmentDescription" class="text-secondary"></p>
+        <h6 class="fw-bold text-primary">Questions and Answers:</h6>
+        <div id="responseQuestionsList" class="mt-3">
+          <!-- Questions and answers will be dynamically inserted here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
@@ -729,11 +828,13 @@ document.addEventListener("DOMContentLoaded", function () {
           data.forEach(response => {
             const row = document.createElement("tr");
             row.innerHTML = `
-              <td>${response.respondent_name}</td>
-              <td>${response.student_id}</td>
-              <td>${response.program}</td>
-              <td>${response.year_level}</td>
-              <td>${response.date_submitted}</td>
+              <td>${response.assessment_response_id || 'N/A'}</td>
+              <td>${response.assessment_id || 'N/A'}</td>
+              <td>${response.student_id || 'N/A'}</td>
+              <td>${response.date_submitted || 'N/A'}</td>
+              <td>
+                <button class="btn btn-primary btn-sm view-response-btn" data-response-id="${response.assessment_response_id}" data-bs-toggle="modal" data-bs-target="#viewResponseModal">View Response</button>
+              </td>
             `;
             responseTableBody.appendChild(row);
           });
@@ -938,6 +1039,97 @@ document.addEventListener("DOMContentLoaded", function () {
       button.closest(".viewsurvey-questions_c").remove();
     }
   };
+});
+
+document.querySelectorAll("[data-bs-target='#viewResponsesModal']").forEach(button => {
+    button.addEventListener("click", function () {
+        const assessmentId = this.getAttribute("data-assessment-id");
+        const modalTitle = document.getElementById("viewResponsesModalLabel");
+        const responseTableBody = document.getElementById("responseTableBody");
+
+        // Update modal title
+        modalTitle.textContent = `Responses for: ${this.closest("tr").querySelector("td").textContent}`;
+
+        // Fetch responses via AJAX
+        fetch("assessments.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `action=fetch_responses&assessment_id=${assessmentId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            responseTableBody.innerHTML = ""; // Clear existing rows
+            if (data.length > 0) {
+                data.forEach(response => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${response.assessment_response_id || 'N/A'}</td>
+                        <td>${response.assessment_id || 'N/A'}</td>
+                        <td>${response.student_id || 'N/A'}</td>
+                        <td>${response.date_submitted || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm view-response-btn" data-response-id="${response.assessment_response_id}" data-bs-toggle="modal" data-bs-target="#viewResponseModal">View Response</button>
+                        </td>
+                    `;
+                    responseTableBody.appendChild(row);
+                });
+            } else {
+                responseTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No responses yet.</td>
+                    </tr>
+                `;
+            }
+        })
+        .catch(error => console.error("Error fetching responses:", error));
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const responseTableBody = document.getElementById("responseTableBody");
+    const viewResponseModal = new bootstrap.Modal(document.getElementById("viewResponseModal"));
+
+    responseTableBody.addEventListener("click", function (event) {
+        if (event.target.classList.contains("view-response-btn")) {
+            const responseId = event.target.getAttribute("data-response-id");
+
+            // Fetch response details via AJAX
+            fetch("assessments.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `action=fetch_response_details&response_id=${responseId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Populate modal fields
+                    const responseDetails = data.response_details;
+                    document.getElementById("responseAssessmentTitle").textContent = responseDetails[0].assessment_title;
+                    document.getElementById("responseAssessmentDescription").textContent = responseDetails[0].assessment_desc;
+
+                    const questionsList = document.getElementById("responseQuestionsList");
+                    questionsList.innerHTML = ""; // Clear previous content
+
+                    responseDetails.forEach((detail, index) => {
+                        const questionHTML = `
+                            <div class="mb-3 border-bottom pb-2">
+                                <h6 class="text-dark fw-semibold">Q${index + 1}: ${detail.question_title || 'Untitled'}</h6>
+                                <p class="text-secondary mb-1">${detail.question_text || 'No question text provided'}</p>
+                                <p class="text-success"><strong>Answer:</strong> ${detail.selected_option || 'No answer provided'}</p>
+                            </div>
+                        `;
+                        questionsList.insertAdjacentHTML('beforeend', questionHTML);
+                    });
+
+                    // Show the modal
+                    viewResponseModal.show();
+                } else {
+                    alert("Failed to fetch response details.");
+                }
+            })
+            .catch(error => console.error("Error fetching response details:", error));
+        }
+    });
 });
     </script>
 
