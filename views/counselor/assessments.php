@@ -182,12 +182,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     // Fetch responses for the given assessment ID
     $sql = "
         SELECT 
-            assessment_response_id, 
-            assessment_id, 
-            student_id, 
-            created_at AS date_submitted
-        FROM assessment_responses
-        WHERE assessment_id = '$assessmentId'
+            r.assessment_response_id, 
+            r.assessment_id, 
+            r.student_id, 
+            s.first_name as firstName,
+            s.last_name as lastName,
+            u.email as email,
+            r.created_at AS date_submitted
+        FROM assessment_responses r
+        JOIN students s ON r.student_id = s.student_id 
+        JOIN user u ON s.user_id = u.user_id
+        WHERE r.assessment_id = '$assessmentId' ORDER BY r.assessment_response_id DESC
     ";
     $result = $db_conn->query($sql);
 
@@ -406,6 +411,8 @@ $db_conn->close();
                 <th>Response ID</th>
                 <th>Assessment ID</th>
                 <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Student Email</th>
                 <th>Date Submitted</th>
                 <th>Actions</th>
               </tr>
@@ -785,7 +792,7 @@ function populateResponses(assessmentTitle) {
   if (exampleResponses.length === 0) {
     const emptyRow = document.createElement("tr");
     emptyRow.innerHTML = `
-      <td colspan="5" class="text-center text-muted">No responses yet.</td>
+      <td colspan="7" class="text-center text-muted">No responses yet.</td>
     `;
     responseTableBody.appendChild(emptyRow);
   } else {
@@ -831,6 +838,8 @@ document.addEventListener("DOMContentLoaded", function () {
               <td>${response.assessment_response_id || 'N/A'}</td>
               <td>${response.assessment_id || 'N/A'}</td>
               <td>${response.student_id || 'N/A'}</td>
+              <td>${response.firstName + " " + response.lastName || 'N/A'}</td>
+               <td>${response.email|| 'N/A'}</td>
               <td>${response.date_submitted || 'N/A'}</td>
               <td>
                 <button class="btn btn-primary btn-sm view-response-btn" data-response-id="${response.assessment_response_id}" data-bs-toggle="modal" data-bs-target="#viewResponseModal">View Response</button>
@@ -841,7 +850,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           responseTableBody.innerHTML = `
             <tr>
-              <td colspan="5" class="text-center text-muted">No responses yet.</td>
+              <td colspan="7" class="text-center text-muted">No responses yet.</td>
             </tr>
           `;
         }
@@ -1066,6 +1075,8 @@ document.querySelectorAll("[data-bs-target='#viewResponsesModal']").forEach(butt
                         <td>${response.assessment_response_id || 'N/A'}</td>
                         <td>${response.assessment_id || 'N/A'}</td>
                         <td>${response.student_id || 'N/A'}</td>
+                        <td>${response.firstName  + " " + response.lastName|| 'N/A'}</td>
+                        <td>${response.email|| 'N/A'}</td>
                         <td>${response.date_submitted || 'N/A'}</td>
                         <td>
                             <button class="btn btn-primary btn-sm view-response-btn" data-response-id="${response.assessment_response_id}" data-bs-toggle="modal" data-bs-target="#viewResponseModal">View Response</button>
@@ -1076,7 +1087,7 @@ document.querySelectorAll("[data-bs-target='#viewResponsesModal']").forEach(butt
             } else {
                 responseTableBody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="text-center text-muted">No responses yet.</td>
+                        <td colspan="7" class="text-center text-muted">No responses yet.</td>
                     </tr>
                 `;
             }
