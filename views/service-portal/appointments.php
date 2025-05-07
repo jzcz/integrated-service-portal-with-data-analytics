@@ -71,9 +71,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         $stmt_attendee->bind_param(
-            "ssssissssssi",
+            "sssssissssss",
             $firstname, $lastname, $middlename, $suffix, $studentNo, $programId, $currentYearLevel,
-            $gender, $personalContactNo, $studentEmail, $guardianName, $guardianContactNo
+            $gender, $personalContactNo, $studentEmail, $guardianName, $guardianContactNo 
         );
 
         if (!$stmt_attendee->execute()) {
@@ -96,8 +96,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Insert appointment details into the appointments table
     $stmt_appointment = $db_conn->prepare("INSERT INTO appointments (
         attendee_id, preferred_day, preferred_time, counseling_concern, add_concern_info, status,
-        appt_req_type, agreedToTermsAndConditions, agreedToDataPrivacyPolicy, agreedToLimitations, appt_date
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        appt_req_type, agreedToTermsAndConditions, agreedToDataPrivacyPolicy, agreedToLimitations
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     if (!$stmt_appointment) {
         error_log("Prepare failed for appointments: " . $db_conn->error);
@@ -107,16 +107,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $apptDate = date("Y-m-d H:i:s");
 
     $stmt_appointment->bind_param(
-        "issssssiiis",
+        "issssssiii",
         $attendeeId, $preferredDay, $preferredTime, $counselingConcern, $addConcernInfo, $status,
-        $apptReqType, $agreeTerms, $agreePrivacy, $agreeLimits, $apptDate
+        $apptReqType, $agreeTerms, $agreePrivacy, $agreeLimits
     );
 
     if ($stmt_appointment->execute()) {
         // Trigger modal via JS
         echo "<script>
             document.addEventListener('DOMContentLoaded', function () {
-                var successModal = new bootstrap.Modal(document.getElementById('yourSuccessModalId'));
+                var successModal = new bootstrap.Modal(document.getElementById('yourModal'));
                 successModal.show();
             });
 
@@ -193,19 +193,31 @@ $db_conn->close();
       <br>
         <form action="" method="POST">
             <div class="appoint-input-group">
-                <label for="lastname">Full Name (Last Name, First Name, Middle Initial)</label>
+                <label for="lastname">Full Name (Last Name, First Name, Middle Name)</label>
                 <div class="appoint-seperate-inputs">
-                <input type="text" id="lastname" name="lastname" value="<?= isset($student['last_name']) ? htmlspecialchars($student['last_name']) : '' ?>" placeholder="Last Name">
+                <input required type="text" id="lastname" name="lastname" value="<?= isset($student['last_name']) ? htmlspecialchars($student['last_name']) : '' ?>" placeholder="Last Name">
                 <input type="text" id="firstname" name="firstname" value="<?= isset($student['first_name']) ? htmlspecialchars($student['first_name']) : '' ?>" placeholder="First Name">
-                <input type="text" id="mi" name="middlename" value="<?= isset($student['middle_name']) ? htmlspecialchars($student['middle_name']) : '' ?>" placeholder="Middle Name">
+                <input required type="text" id="mi" name="middlename" value="<?= isset($student['middle_name']) ? htmlspecialchars($student['middle_name']) : '' ?>" placeholder="Middle Name">
             </div>
+            <div class="appoint-input-group">
+                    <label for="gender">Gender</label>
+                    <select required name="gender" value="" class="form-select">
+                        <option value="" disabled selected>Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="appoint-input-group">
+                    <label for="student_no">Student No.</label>
+                    <input required type="text" id="student_no" name="student_no" value="" placeholder="XX-XXXX">
+                </div>
 
           <!-- filepath: c:\xampp\htdocs\integrated-service-portal-with-data-analytics\views\service-portal\appointments.php -->
 <div class="appoint-input-group">
-    <label for="course/yr/sec">Course/Year/Section</label>
+    <label for="course/yr/sec">Course & Year Level</label>
     <div class="appoint-seperate-inputs">
         <!-- Dropdown for Course -->
-        <select id="course" name="course" class="form-select">
+        <select required id="course" name="course" class="form-select">
             <option value="" disabled selected>Please Select Course</option>
             <option value="1">Bachelor of Science in Accountancy (BSA)</option>
             <option value="2">Bachelor of Science in Management Accounting (BSMA)</option>
@@ -220,7 +232,7 @@ $db_conn->close();
         </select>
 
         <!-- Dropdown for Year -->
-        <select id="year" name="year" class="form-select">
+        <select required id="year" name="year" class="form-select">
             <option value="" disabled selected>Please Select Year</option>
             <option value="1st">1st Year</option>
             <option value="2nd">2nd Year</option>
@@ -232,25 +244,25 @@ $db_conn->close();
 
                 <div class="appoint-input-group">
                     <label for="personal-contact-no">Personal Contact Number</label>
-                    <input type="text" id="personal-contact-no" name="personal-contact-no" value="<?= isset($student['personal_contact_no']) ? htmlspecialchars($student['personal_contact_no']) : '' ?>" placeholder="+63 000 000 0000">
+                    <input required type="number" id="personal-contact-no" name="personal-contact-no" value="<?= isset($student['personal_contact_no']) ? htmlspecialchars($student['personal_contact_no']) : '' ?>" placeholder="09XXXXXXXXX" pattern="[0-9]{11}">
                 </div>
         
 
             <div class="appoint-input-group">
                 <label for="qcu-email">QCU Email Address</label>
-                <input type="text" id="qcu-email" name="qcu-email" value="<?= isset($student['qcu_email']) ? htmlspecialchars($student['qcu_email']) : '' ?>" placeholder="example@example.com">
+                <input required type="email" id="qcu-email" name="qcu-email" value="<?= isset($student['qcu_email']) ? htmlspecialchars($student['qcu_email']) : '' ?>" placeholder="example@example.com">
             </div>
             <div class="appoint-row-group">
                 <div class="appoint-input-group">
                     <label for="guardian's-name">Guardian's Name</label>
                     <div class="multi-input-group">
-                    <input type="text" id="guardian's-name" name="guardian's-name" value="<?= isset($student['guardian_name']) ? htmlspecialchars($student['guardian_name']) : '' ?>" placeholder="Guardian's Full Name">
+                    <input required type="text" id="guardian's-name" name="guardian's-name" value="<?= isset($student['guardian_name']) ? htmlspecialchars($student['guardian_name']) : '' ?>" placeholder="Guardian's Full Name">
                     </div>
                 </div>
 
                 <div class="appoint-input-group">
                     <label for="guardian-contact-no">Guardian's Contact Number</label>
-                    <input type="text" id="guardian-contact-no" name="guardian-contact-no" value="<?= isset($student['guardian_contact_no']) ? htmlspecialchars($student['guardian_contact_no']) : '' ?>" placeholder="+63 000 000 0000">
+                    <input required type="number" id="guardian-contact-no" name="guardian-contact-no" value="<?= isset($student['guardian_contact_no']) ? htmlspecialchars($student['guardian_contact_no']) : '' ?>" placeholder="09XXXXXXXXX" pattern="[0-9]{11}">
 
                 </div>
             </div>
@@ -260,7 +272,7 @@ $db_conn->close();
             
 <div class="appoint-input-group">
     <label for="counseling_concern">Counseling Concern</label>
-    <select id="counseling_concern" name="counseling_concern" class="form-select">
+    <select required id="counseling_concern" name="counseling_concern" class="form-select">
         <option value="" disabled selected>Please Select</option>
         <option value="Career" <?= isset($_POST['counseling_concern']) && $_POST['counseling_concern'] === 'Career' ? 'selected' : '' ?>>Career</option>
         <option value="Academic" <?= isset($_POST['counseling_concern']) && $_POST['counseling_concern'] === 'Academic' ? 'selected' : '' ?>>Academic</option>
@@ -275,7 +287,7 @@ $db_conn->close();
 
 <div class="appoint-input-group">
     <label for="preferred_time">Preferred Time</label>
-    <select id="preferred_time" name="preferred_time" class="form-select">
+    <select required id="preferred_time" name="preferred_time" class="form-select">
         <option value="" disabled selected>Please Select</option>
         <option value="9:00 AM to 10:00 AM" <?= isset($_POST['preferred_time']) && $_POST['preferred_time'] === '9:00 AM to 10:00 AM' ? 'selected' : '' ?>>9:00 AM - 10:00 AM</option>
         <option value="11:00 AM to 12:00 NN" <?= isset($_POST['preferred_time']) && $_POST['preferred_time'] === '11:00 AM to 12:00 NN' ? 'selected' : '' ?>>11:00 AM - 12:00 NN</option>
@@ -286,7 +298,7 @@ $db_conn->close();
 
 <div class="appoint-input-group">
     <label for="preferred_day">Preferred Day</label>
-    <select id="preferred_day" name="preferred_day" class="form-select">
+    <select required id="preferred_day" name="preferred_day" class="form-select">
         <option value="" disabled selected>Please Select</option>
         <option value="Monday" <?= isset($_POST['preferred_day']) && $_POST['preferred_day'] === 'Monday' ? 'selected' : '' ?>>Monday</option>
         <option value="Tuesday" <?= isset($_POST['preferred_day']) && $_POST['preferred_day'] === 'Tuesday' ? 'selected' : '' ?>>Tuesday</option>

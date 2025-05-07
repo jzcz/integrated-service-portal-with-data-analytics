@@ -8,6 +8,73 @@
       header("location: ../public/counselor-admin-login-page.php");
       exit();
     }
+    
+    $db_conn = require_once(__DIR__ . '/../../db/db_conn.php');
+
+    $page = 1;
+
+    if($_SERVER['REQUEST_METHOD'] === 'GET') {
+      if(isset($_GET["page_form"])) {
+        $page = $_GET['page'];
+      }
+    } 
+
+    function getAllSurveyResponses($db_conn, $page) {
+      $pageSize = 50;
+      $offset = ($page - 1) * $pageSize;
+
+      $sql = "SELECT  r.created_at, q.question_text as question, q.survey_question_id as question_id,o.option_text as answer, r.survey_response_id as response_id FROM survey_responses r 
+      JOIN survey_answers a on r.survey_response_id = a.survey_response_id
+      JOIN  survey_options o on a.survey_option_id = o.survey_option_id
+      JOIN survey_questions q on a.survey_question_id = q.survey_question_id
+      WHERE r.survey_id = 1 ORDER BY response_id DESC LIMIT $pageSize OFFSET $offset ";
+
+  
+      $stmt = $db_conn->prepare($sql);
+      $stmt->execute();
+      $results = $stmt->get_result();
+      $allResponses = $results->fetch_all(MYSQLI_ASSOC);
+
+      if (empty($allResponses)) {
+        return [];
+      } else {
+        foreach ($allResponses  as $row) {
+          $responseId = $row['response_id'];
+      
+          // If this response_id hasn't been initialized yet
+          if (!isset($groupedResponses[$responseId])) {
+              $groupedResponses[$responseId] = [
+                  "response_id" => $responseId,
+                  "created_at" => $row['created_at'],
+                  "survey" => []
+              ];
+          }
+      
+          // Append the question+answer inside the "survey"
+          $groupedResponses[$responseId]['survey'][] = [
+              "question" => $row['question'],
+              "answer" => $row['answer']
+          ];
+        } 
+        return $groupedResponses;
+      }
+    }
+
+
+
+    $groupedResponses = getAllSurveyResponses($db_conn, $page);
+
+
+
+function getSurvey($db_conn) {
+    $sql = "SELECT question_text FROM survey_questions WHERE survey_id = 1;";
+    $stmt = $db_conn->prepare($sql);
+    $stmt->execute();
+    $results = $stmt->get_result();
+    return $results->fetch_all(MYSQLI_ASSOC);
+}
+
+$questions = getSurvey($db_conn);
 
 ?>
 <!DOCTYPE html>
@@ -31,26 +98,67 @@
     <main>
       <!-- BANNER -->
       <div class="border-bottom py-3 px-3 banner-surveys_c">
-      <h6 class="fw-bold mb-0 btext-surveys_c">Surveys</h6>
+      <h6 class="fw-bold mb-0 btext-surveys_c">Evaluation Survey Responses</h6>
       </div>
 
       <!-- TITLE -->
-<div class="container pt-2 mt-5">
-  <h2 class="text-center fw-bold title-surveys_c">Student Surveys</h2>
+<div class="container pt-4">
 
   <!-- Button Row -->
   <div class="d-flex justify-content-end gap-2 mt-2 mb-0">
-    <button class="btn btn-surveys_c btn-primary" data-bs-toggle="modal" data-bs-target="#addNewModal">
+    <button class="btn btn-surveys_c btn-primary" data-bs-toggle="modal" data-bs-target="#viewSurvey">
       <i class="bi"></i> <span class="fw-bold">View Survey</span>
     </button>
   </div>
 </div>
 
+  <div class="modal fade" id="viewSurvey" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" style="font-size: 15px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="modal-title text-white" id="exampleModalLabel">Evaluation Survey</p>
+        </div>
+        <div class="modal-body">
+        
+        <?php foreach($questions as $q) { ?>
+          <div class="pb-4">
+            <p class="mb-1"><?php echo $q['question_text'] ?></p>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" id="radioDefault2" disabled>
+              <label class="form-check-label text-body-emphasis" for="radioDefault2">Strongly Agree</label>
+            </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="radioDefault3" disabled>
+            <label class="form-check-label text-body-emphasis" for="radioDefault3">Agree</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="radioDefault4" disabled>
+            <label class="form-check-label text-body-emphasis" for="radioDefault4">Neutral</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="radioDefault5"  disabled>
+            <label class="form-check-label text-body-emphasis" for="radioDefault5">Disagree</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="radioDefault6"  disabled>
+            <label class="form-check-label text-body-emphasis" for="radioDefault6">Strongly Disagree</label>
+          </div>
+        </div>
+        <?php } ?>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div></div>
+
+
+
     <!-- Student Surveys Table Section -->
 <div class="container mt-4">
-<div class="table-pagination-wrapper">
-  <div class="table-responsive table-surveys_c">
-    <table class="table align-middle mb-0 table-hover">
+<div class="">
+  <div class="">
+    <table class="table-bordered rounded table text-center">
       <thead class="table-light thead-surveys_c">
         <tr>
           <th class="sticky-top bg-secondary-subtle text-center">#</th>
@@ -60,273 +168,106 @@
         </tr>
       </thead>
       <tbody id="surveyTableBody">
-        <!-- <tr>
-          <td class="text-truncate column-surveys_c text-center align-middle">1.</td>
-          <td class="align-middle">Lorem ipsum dolor sit amet, conse...</td>
-          <td class="align-middle">Dec 9, 2024</td>
-          <td class="text-center align-middle">
-            <button class="btn btn-viewsurvey_c btn-sm" data-bs-toggle="modal" data-bs-target="#surveyModal">
-              View Response
-            </button>
-          </td>
-        </tr> -->
+        <?php if($groupedResponses !== null) {
+                  foreach ($groupedResponses as $index => $response): ?>
+                    <tr>
+                      <td class="text-truncate column-surveys_c text-center align-middle"><?php echo $response["response_id"]  ?></td>
+                      <td class="align-middle">QCU Guidance and Counseling Office Services Survey</td>
+                      <td class="align-middle"> <?php echo date("M j, Y, D", strtotime($response['created_at'])); ?></td>
+                      <td class="d-flex justify-content-center align-items-center">
+                        <button class="btn btn-viewsurvey_c btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#response-modal-<?php echo $index; ?>">
+                          View Response
+                        </button>
+                      </td>
+                    </tr>
+                    <div class="modal fade" id  ="response-modal-<?php echo $index; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg modal-dialog-scrollable" style="font-size: 15px;">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <p class="modal-title text-white" id="exampleModalLabel">Survey Response</p>
+                          </div>
+                          <div class="modal-body">
+                            <?php foreach($response['survey'] as $responseItem) { ?>
+                            <div class="pb-4">
+                            <p class="mb-1"><?php echo $responseItem['question']; ?></p>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" id="radioDefault2" 
+                              <?php if($responseItem['answer'] == "Strongly Agree") { echo "checked" ;} else { echo " disabled"; } ?>>
+                              <label class="form-check-label text-body-emphasis" for="radioDefault2">Strongly Agree</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" id="radioDefault3" 
+                              <?php if($responseItem['answer'] == "Agree") { echo "checked" ;} else { echo " disabled"; } ?>>
+                              <label class="form-check-label text-body-emphasis" for="radioDefault3">
+                                Agree
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" id="radioDefault4" 
+                              <?php if($responseItem['answer'] == "Neutral") { echo "checked" ;} else { echo " disabled"; } ?>>
+                              <label class="form-check-label text-body-emphasis" for="radioDefault4">
+                                Neutral
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" id="radioDefault5" 
+                              <?php if($responseItem['answer'] == "Disagree") { echo "checked" ;} else { echo " disabled"; } ?>>
+                              <label class="form-check-label text-body-emphasis" for="radioDefault5">
+                                Disagree
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" id="radioDefault6" 
+                              <?php if($responseItem['answer'] == "Strongly Disagree") { echo "checked" ;} else { echo " disabled";  } ?>>
+                              <label class="form-check-label text-body-emphasis" for="radioDefault6">
+                                Strongly Disagree
+                              </label>
+                              </div>
+                            </div>
+                            <?php } ?>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <?php endforeach; 
+        } else { ?>
+
+<?php  } ?>
+
       </tbody>
     </table>
   </div>
 
 <!-- Pagination -->
-<div class="d-flex justify-content-end mt-3">
-      <nav aria-label="Page navigation">
-        <ul class="pagination mb-0">
-          <li class="page-item">
-            <a class="page-link pagination-surveys_c text-white" href="#">Previous</a>
-          </li>
-          <li class="page-item active">
-            <a class="page-link pagination-surveys_c bg-white border text-black" href="#">1</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link pagination-surveys_c text-white" href="#">Next</a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-
-  </div>
-</div>
+<div class="appt-page-nav-wrapper mt-4">
+            <form action="" method="get">
+              <input type="hidden" name="page_form" value="true" hidden>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item">
+                            <button type="submit" name="page" value="<?php echo $page - 1; ?>" class="page-link page-nav-link <?php echo ($page == 1) ? ' disabled' : ''; ?>" <?php echo ($page == 1) ? ' disabled' : ''; ?>>Previous</button>
+                        </li>
+                        <li class="page-item"><button class="page-link text-body-emphasis"><?php echo $page ?></button></li>
+                        <li class="page-item">
+                            <button type="submit" name="page" value=<?php echo $page + 1?> class="page-link page-nav-link">Next</button>
+                        </li>
+                    </ul>
+                </nav>
+            </form>
+        </div>
 
 
 <!-- View Modal -->
-<div class="modal fade" id="surveyModal" tabindex="-1" role="dialog" aria-labelledby="surveyModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered viewmodal_c" role="document">
-    <div class="modal-content survey-viewmodal-content">
-      <div class="modal-body vs-modalbody_c">
-        <h2 class="survey-title title-viewsurvey_c">Student Survey</h2>
-        <p class="survey-instruction instruction-viewsurvey_c"><strong>Instruction:</strong> Please indicate your level of agreement with each statement by selecting one of the following options:</p>
-        
-        <div class="likert-legend d-flex justify-content-between mb-4 likertlegend-viewsurvey_c">
-          <div>
-            <span class="likert-circle likertcircle-viewsurvey_c legend-strongly-disagree-viewsurvey_c"></span>
-            <span><strong>Strongly Disagree:</strong> You completely disagree with the statement.</span>
-          </div>
-          <div>
-            <span class="likert-circle likertcircle-viewsurvey_c legend-disagree-viewsurvey_c"></span>
-            <span><strong>Disagree:</strong> You generally disagree with the statement.</span>
-          </div>
-          <div>
-            <span class="likert-circle likertcircle-viewsurvey_c legend-neutral-viewsurvey_c"></span>
-            <span><strong>Neutral:</strong> You neither agree nor disagree; you feel indifferent.</span>
-          </div>
-          <div>
-            <span class="likert-circle likertcircle-viewsurvey_c legend-agree-viewsurvey_c"></span>
-            <span><strong>Agree:</strong> You generally agree with the statement.</span>
-          </div>
-          <div>
-            <span class="likert-circle likertcircle-viewsurvey_c legend-strongly-agree-viewsurvey_c"></span>
-            <span><strong>Strongly Agree:</strong> You completely agree with the statement.</span>
-          </div>
-        </div>
 
-        <form id="studentSurveyForm">
-          <div class="viewsurvey-questions_c">
-            <!-- Question 1 -->
-            <div class="viewsurvey-questions_c">
-              <div><strong>1. Accessibility of Services:</strong> The counseling office is easily accessible when I need support.</div>
-              <div class="likert-row-viewsurvey_c">
-                <label>
-                  <input type="radio" name="q1" value="1" class="vs_custom-radio sd" checked disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q1" value="2" class="vs_custom-radio d" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q1" value="3" class="vs_custom-radio n" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q1" value="4" class="vs_custom-radio a" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q1" value="5" class="vs_custom-radio sa" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Question 2 -->
-            <div class="viewsurvey-questions_c">
-              <div><strong>2. Availability of Counselors:</strong> There are sufficient counselors available for students who need assistance.</div>
-              <div class="likert-row-viewsurvey_c">
-                <label>
-                  <input type="radio" name="q2" value="1" class="vs_custom-radio sd" checked disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q2" value="2" class="vs_custom-radio d" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q2" value="3" class="vs_custom-radio n" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q2" value="4" class="vs_custom-radio a" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q2" value="5" class="vs_custom-radio sa" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Question 3 -->
-            <div class="viewsurvey-questions_c">
-              <div><strong>3. Satisfaction with Counseling Sessions:</strong> I am satisfied with the counseling sessions I have attended.</div>
-              <div class="likert-row-viewsurvey_c">
-                <label>
-                  <input type="radio" name="q3" value="1" class="vs_custom-radio sd" checked disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q3" value="2" class="vs_custom-radio d" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q3" value="3" class="vs_custom-radio n" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q3" value="4" class="vs_custom-radio a" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q3" value="5" class="vs_custom-radio sa" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Question 4 -->
-            <div class="viewsurvey-questions_c">
-              <div><strong>4. Counselor's Professionalism:</strong> The counselor was professional in their approach and attitude.</div>
-              <div class="likert-row-viewsurvey_c">
-                <label>
-                  <input type="radio" name="q4" value="1" class="vs_custom-radio sd" checked disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q4" value="2" class="vs_custom-radio d" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q4" value="3" class="vs_custom-radio n" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q4" value="4" class="vs_custom-radio a" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q4" value="5" class="vs_custom-radio sa" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Question 5 -->
-            <div class="viewsurvey-questions_c">
-              <div><strong>5. General Experience:</strong> Overall, I am satisfied with my experience at the counseling office.</div>
-              <div class="likert-row-viewsurvey_c">
-                <label>
-                  <input type="radio" name="q5" value="1" class="vs_custom-radio sd" checked disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q5" value="2" class="vs_custom-radio d" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q5" value="3" class="vs_custom-radio n" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q5" value="4" class="vs_custom-radio a" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-                <label>
-                  <input type="radio" name="q5" value="5" class="vs_custom-radio sa" disabled>
-                  <span class="vscustom-circle_c"></span>
-                </label>
-              </div>
-            </div>
-
-          </div>
-        </form>
-
-        <!-- Close Button -->
-        <button type="button" class="btn viewsurvey-close-btn_c mt-4" data-bs-dismiss="modal" aria-label="Close">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
     </main>
 
     <script>
-  const tbody = document.getElementById('surveyTableBody');
 
-  for (let i = 0; i < 1; i++) {
-    const row = `
-      <tr>
-          <td class="text-truncate column-surveys_c text-center align-middle">${i + 1}</td>
-          <td class="align-middle">QCU Guidance and Counseling Office Services Survey</td>
-          <td class="align-middle"> <?php echo date("M j, Y"); ?></td>
-          <td class="d-flex justify-content-center align-items-center">
-          <button class="btn btn-viewsurvey_c btn-sm" data-bs-toggle="modal" data-bs-target="#surveyModal">
-          View Response
-          </button>
-          </td>
-          </tr>
-    `;
-    tbody.insertAdjacentHTML('beforeend', row);
-  }
-
-  // Example pre-selected survey data (this should come from your database)
-const surveyData = {
-  q1: '4', // Example value for question 1 (1: Strongly Disagree, 2: Disagree, 3: Neutral, 4: Agree, 5: Strongly Agree)
-  q2: '2',
-  q3: '3',
-  q4: '1',
-  q5: '5'
-};
-
-// Function to pre-select the radio buttons based on the survey data
-function preselectSurveyData() {
-  // Loop through each question and set the checked radio button
-  for (let question in surveyData) {
-    let selectedValue = surveyData[question];
-    let radios = document.getElementsByName(question);
-
-    // Loop through the radio buttons for this question
-    for (let i = 0; i < radios.length; i++) {
-      if (radios[i].value === selectedValue) {
-        radios[i].checked = true;
-      }
-    }
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  const surveyModal = document.getElementById('surveyModal');
-  
-  surveyModal.addEventListener('show.bs.modal', function () {
-    preselectSurveyData();
-  });
-});
 
 </script>
 

@@ -758,7 +758,7 @@ $db_conn->close();
                                                 <div class="input-group input-group-sm flex-nowrap">   
                                                 <input type="text" readonly class="form-control" value="<?php echo $a['proof_img_url'] ? basename($a['proof_img_url']) : 'No file for walk-in requests.' ?>" aria-describedby="addon-wrapping">
                                                 <?php if( $a['proof_img_url']) { ?>
-                                                    <a href="<?php echo $a['proof_img_url']?>" class="input-group-text link-underline-opacity-0" id="addon-wrapping"><i class="bi bi-eye-fill"></i></a>    
+                                                    <a href="<?php echo $a['proof_img_url']?>" class="input-group-text link-underline-opacity-0" target="_blank" rel="noopener noreferrer" id="addon-wrapping"><i class="bi bi-eye-fill"></i></a>    
                                                 <?php }  ?>
                                                 </div>
                                             </div>

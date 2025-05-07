@@ -140,7 +140,7 @@
                     <p class="text-center"><span class="fw-bold">(1)</span> Strongly Disagree <span class="fw-bold">(2)</span> Disagree <span class="fw-bold">(3)</span> Neutral <span class="fw-bold">(4)</span> Agree <span class="fw-bold">(5)</span> Strongly Agree</p>
                     <div class="mb-4 mt-4">
                         <p style="font-size: 15px;" ><span class="fw-bold" >Accessibility of Service</span>: The counseling office is easily accessible when I need support.</p>
-                        <select class="form-select form-select-sm" name="question-one-option-id" id="">
+                        <select required class="form-select form-select-sm" name="question-one-option-id" id="">
                             <option value="" selected disabled>Choose Option</option>
                             <option value="1">Strongly Disagree</option>
                             <option value="2">Disagree</option>
@@ -151,7 +151,7 @@
                     </div>
                     <div class="mb-4 mt-2">
                         <p style="font-size: 15px;" ><span class="fw-bold">Professionalism of Staff</span>: The guidance counselors are professional and courteous.</p>
-                        <select class="form-select form-select-sm" name="question-two-option-id" id="">
+                        <select required class="form-select form-select-sm" name="question-two-option-id" id="">
                             <option value="" selected disabled>Choose Option</option>
                             <option value="6">Strongly Disagree</option>
                             <option value="7">Disagree</option>
@@ -162,7 +162,7 @@
                     </div>
                     <div class="mb-4 mt-2">
                         <p style="font-size: 15px;" ><span class="fw-bold">Timeliness of Response</span>: My appointments and requests were handled in a timely manner.</p>
-                        <select class="form-select form-select-sm" name="question-three-option-id" id="">
+                        <select required class="form-select form-select-sm" name="question-three-option-id" id="">
                             <option value="" selected disabled>Choose Option</option>
                             <option value="11">Strongly Disagree</option>
                             <option value="12">Disagree</option>
@@ -173,7 +173,7 @@
                     </div>
                     <div class="mb-4 mt-2">
                         <p style="font-size: 15px;" ><span class="fw-bold">Effectiveness of Counseling Sessions</span>: The counseling sessions helped me address my concerns effectively.</p>
-                        <select class="form-select form-select-sm" name="question-four-option-id" id="">
+                        <select required class="form-select form-select-sm" name="question-four-option-id" id="">
                             <option value="" selected disabled>Choose Option</option>
                             <option value="16">Strongly Disagree</option>
                             <option value="17">Disagree</option>
@@ -184,7 +184,7 @@
                     </div>
                     <div class="mb-4 mt-2">
                         <p style="font-size: 15px;" ><span class="fw-bold">Confidentiality of Services</span>: I feel confident that the counseling office maintains the confidentiality of my information.</p>
-                        <select class="form-select form-select-sm" name="question-five-option-id" id="">
+                        <select required class="form-select form-select-sm" name="question-five-option-id" id="">
                             <option value="" selected disabled>Choose Option</option>
                             <option value="21">Strongly Disagree</option>
                             <option value="22">Disagree</option>

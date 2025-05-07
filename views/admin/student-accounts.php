@@ -45,9 +45,8 @@ if (isset($_POST['toggle'])) {
 <main class="p-4">
   <h2 class="fw-bold text-center mb-4" style="color: #004085;">Student Accounts</h2>
 
-  <div class="d-flex justify-content-between mb-3">
-  <button type="button" class="btn" style="background-color: #004085; color: white; font-weight: bold;">Add Account</button>
-    <form method="GET" class="d-flex align-items-end">
+  <div class="d-flex justify-content-end mb-3">
+    <form method="GET" class="d-flex align-items-end justify-self -end">
       <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search account" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
       <button type="submit" class="btn btn-sm" style="width: 120px; background-color: #004085; color: white;">
         <i class="bi bi-search"></i> Search

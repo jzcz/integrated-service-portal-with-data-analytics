@@ -30,7 +30,7 @@
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-ui-radios-grid"></i>
-                        <a class="nav-link active" aria-current="page" href="../counselor/surveys.php">Surveys</a>
+                        <a class="nav-link active" aria-current="page" href="../counselor/surveys.php">Evaluation Survey Responses</a>
                     </li>
                     <li class="nav-item sidebar-nav-item d-flex align-items-center gap-2">
                         <i class="bi bi-file-earmark-fill"></i>

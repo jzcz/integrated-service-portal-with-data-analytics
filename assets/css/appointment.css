@@ -71,7 +71,7 @@ Appointment css
   position: relative; 
   top: 180px; 
   margin-bottom: 100px; 
-  height: 1010px;
+  height: 100%;
 }
 
 .appoint-form-container h1 {

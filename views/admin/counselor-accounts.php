@@ -2,12 +2,17 @@
   session_start();
 
   include(__DIR__ . "/../../config/utils.php");
-  $db_conn = require __DIR__ . "/../../db/db_conn.php";
+  include(__DIR__ . "/../../queries/accounts.php");
 
   if (!isset($_SESSION['adminId']) || !isset($_SESSION['userId']) || $_SESSION['userRole'] !== 'Admin') {
     header("location: ../public/counselor-admin-login-page.php");
     exit();
   }
+
+  $db_conn = require __DIR__ . "/../../db/db_conn.php";
+
+  $err = null;
+  $success = null;
 
   if ($db_conn->connect_error) {
       die("Connection failed: " . $db_conn->connect_error);
@@ -44,6 +49,40 @@
         }
     }
   }
+
+  if(isset($_GET["err"])) {
+      $err = $_GET["err"];
+  }
+
+  if(isset($_GET["success"])) {
+      $success = $_GET["success"];
+  }
+
+  if($_SERVER['REQUEST_METHOD'] == 'POST' ) {
+    $info = [
+      'firstName' => $_POST['firstName'],
+      'middleName' => isset($_POST['middleName']) ? $_POST['middleName'] : null,
+      'lastName' => $_POST['lastName'],
+      'suffix' => isset($_POST['suffix']) ? $_POST['suffix'] : null,
+      'employeeId' => $_POST['employeeId'],
+    ];
+
+    $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+    $acc = [
+      'email' => $_POST['email'],
+      'password' => $hashedPassword
+    ];
+    $res = createCounselorAccount($db_conn, $info, $acc);
+
+    if($res) {
+      $success = "Account created successfully!";
+      header("Location: {$_SERVER['PHP_SELF']}?success=" . urlencode($success));
+    } else {
+      $err = "Failed to create account. Please try again.";
+      header("Location: {$_SERVER['PHP_SELF']}?err=" . urlencode($err));
+    }
+  }
 ?>
 
 
@@ -60,18 +99,100 @@
 </head>
 <body>
   <?php include(__DIR__ . '/../components/admin/sidebar.php'); ?>
-
+    <!-- MESSAGE MODAL START -->
+    <div class="modal fade" id="message-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header 
+          <?php echo $err ? "bg-warning"  : "bg-success" ?>
+          ">
+            <h5 class="modal-title text-white fs-6" id="exampleModalLabel">
+            <i class="bi bi-check-circle"></i>
+              Success
+            </h5>
+          </div>
+          <div class="modal-body">
+            <?php echo $err ??  $err ?>
+            <?php echo $success ??  $success ?>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light border-secondary-subtle" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- MESSAGE MODAL END -->
 <main class="p-4">
   <h2 class="fw-bold text-center mb-4" style="font-family: 'Rubik', sans-serif; color: #004085;">Counselor Accounts</h2>
 
   <div class="d-flex justify-content-between mb-3">
-    <button type="button" class="btn" style="background-color: #004085; color: white; font-weight: bold;">Add Account</button>
+    <button type="button" class="btn" style="background-color: #004085; color: white; font-weight: bold;" data-bs-toggle="modal" data-bs-target="#addAccount">Add Account</button>
     <form method="GET" class="d-flex align-items-end">
       <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search account" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
       <button type="submit" class="btn btn-sm" style="width: 120px; background-color: #004085; color: white;">
         <i class="bi bi-search"></i> Search
       </button>
     </form>
+  </div>
+
+  <div class="modal fade" id="addAccount" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      <form action="" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Counselor Account</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+          <div class="mb-2">
+            <label for="exampleFormControlInput1" class="form-label" style="font-size: 14px;">First Name</label>
+            <input type="text" name="firstName" class="form-control form-control-sm"  id="exampleFormControlInput1" placeholder="First Name">
+          </div>
+          <div class="mb-2">
+            <label for="exampleFormControlInput2" class="form-label" style="font-size: 14px;">Middle Name <span class="text-danger" style="font-size: 12px;">(leave blank if none)</span></label>
+            <input type="text" name="middleName" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="Middle Name">
+          </div>
+          <div class="mb-2">
+            <label for="exampleFormControlInput3" class="form-label" style="font-size: 14px;">Last Name</label>
+            <input type="text" name="lastName" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="Last Name">
+          </div>
+          <div class="mb-2">
+            <label for="exampleFormControlInput3" name="email" class="form-label" style="font-size: 14px;">Suffix</label>
+            <select class="form-select form-select-sm" aria-label="Default select example">
+              <option selected  >None</option>
+              <option value="Jr.">Jr.</option>
+              <option value="Sr.">Sr.</option>
+              <option value="III">III</option>
+              <option value="IV">IV</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label for="exampleFormControlInput3" name="email" class="form-label" style="font-size: 14px;">Employee ID</label>
+            <input type="text" name="employeeId" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="Employee ID">
+          </div>
+          <div class="mb-2">
+            <label for="exampleFormControlInput3" class="form-label" style="font-size: 14px;">Email</label>
+            <input type="email" name="email" class="form-control form-control-sm" id="exampleFormControlInput1" placeholder="Last Name">
+          </div>
+          <div class="mb-2">
+            <label for="exampleFormControlInput3" class="form-label" style="font-size: 14px;">User Password</label>
+  
+            <div class="input-group">
+              <input type="password" name="password" class="form-control form-control-sm" id="passwordInput" placeholder="Password">
+              <span class="input-group-text" id="togglePassword" data-target="passwordInput"><i class="bi bi-eye-slash"></i></span>
+            </div> 
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        </form>
+      </div>
+      
+    </div>
   </div>
 
   <div class="table-responsive">
@@ -118,7 +239,7 @@ if ($stmt = $db_conn->prepare($totalQuery)) {
 
 $totalPages = ceil($totalAccounts / $limit);
 
-$sql = "SELECT s.counselor_id, CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name, u.email, u.created_at, u.is_disabled, u.user_id FROM counselors s JOIN user u ON s.user_id = u.user_id WHERE $whereCondition LIMIT $limit OFFSET $offset";
+$sql = "SELECT s.counselor_id, CONCAT(s.last_name, ', ', s.first_name, ' ', s.middle_name) AS full_name, u.email, u.created_at, u.is_disabled, u.user_id, s.employee_id FROM counselors s JOIN user u ON s.user_id = u.user_id WHERE $whereCondition ORDER BY counselor_id DESC LIMIT $limit OFFSET $offset";
 
 if ($stmt = $db_conn->prepare($sql)) {
     if (!empty($params)) {
@@ -138,9 +259,9 @@ if ($stmt = $db_conn->prepare($sql)) {
                 <td>{$row['created_at']}</td>
                 <td>
                   <div class='btn-group btn-group-sm' role='group' style='gap: 5px;'>
-                    <a href='#' class='btn' style='background-color: #3879b1; color: white; border-radius: 8px;' data-bs-toggle='modal' data-bs-target='#viewAccountModal' data-fullname='{$row['full_name']}' data-studno='{$row['counselor_id']}' data-email='{$row['email']}' data-datecreated='{$row['created_at']}'>View</a>
+                    <a href='#' class='btn' style='background-color: #3879b1; color: white; border-radius: 8px;' data-bs-toggle='modal' data-bs-target='#viewAccountModal' data-fullname='{$row['full_name']}' data-studno='{$row['employee_id']}' data-email='{$row['email']}' data-datecreated='{$row['created_at']}'>View</a>
                     <form method='POST' action='' style='display:inline-block;'>
-                      <input type='hidden' name='user_id' value='{$row['user_id']}'>
+                      <input type='hidden' name='user_id' value='{$row['employee_id']}'>
                       <button type='submit' name='toggle' class='btn' style='background-color: {$buttonColor}; color: white; border-radius: 8px;'>
                         {$buttonText}
                       </button>
@@ -195,6 +316,8 @@ if ($stmt = $db_conn->prepare($sql)) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  const messageModal = new bootstrap.Modal(document.getElementById("message-modal"));
+  const passwordToggleBtn = document.getElementById("togglePassword");
 const viewAccountModal = document.getElementById('viewAccountModal');
 viewAccountModal.addEventListener('show.bs.modal', event => {
   const button = event.relatedTarget;
@@ -203,6 +326,23 @@ viewAccountModal.addEventListener('show.bs.modal', event => {
   document.getElementById('modalEmail').textContent = button.getAttribute('data-email');
   document.getElementById('modalDateCreated').textContent = button.getAttribute('data-datecreated');
 });
+
+<?php if($err || $success) { echo "messageModal.show();"; }  ?>
+
+    passwordToggleBtn.addEventListener('click', function () {
+              const targetInput = document.getElementById(this.dataset.target);
+              const icon = this.querySelector('i');
+
+              if (targetInput.type === 'password') {
+                  targetInput.type = 'text';
+                  icon.classList.remove('bi-eye-slash');
+                  icon.classList.add('bi-eye');
+              } else {
+                  targetInput.type = 'password';
+                  icon.classList.remove('bi-eye');
+                  icon.classList.add('bi-eye-slash');
+              }
+        }); 
 </script>
 
 </body>
